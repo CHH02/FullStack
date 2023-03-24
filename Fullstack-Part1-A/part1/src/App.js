@@ -20,17 +20,48 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const [total, setTotal] = useState(0)
+  const [avg, setAvg] = useState(0)
+  const [pos, setPos] = useState(0)
+
+  const settingGood = newVal => {
+    setGood(newVal)
+    const updatedTotal = total + 1
+    setTotal(updatedTotal)
+    setAvg((newVal-bad)/updatedTotal)
+    setPos((newVal/updatedTotal)*100)
+  }
+
+  const settingNeutral = newVal => {
+    setNeutral(newVal)
+    const updatedTotal = total + 1
+    setTotal(updatedTotal)
+    setAvg((good-bad)/updatedTotal)
+    setPos((good/updatedTotal)*100)
+  }
+
+  const settingBad = newVal => {
+    setBad(newVal)
+    const updatedTotal = total + 1
+    setTotal(updatedTotal)
+    setAvg((good-newVal)/updatedTotal)
+    setPos((good/updatedTotal)*100)
+  }
 
   return (
     <div>
       <Display text="give feedback" />
-      <Button handleClick={() => setGood(good + 1)} text="good" />
-      <Button handleClick={() => setNeutral(neutral + 1)} text="neutral" />
-      <Button handleClick={() => setBad(bad + 1)} text="bad" />
+      <Button handleClick={() => settingGood(good + 1)} text="good" />
+      <Button handleClick={() => settingNeutral(neutral + 1)} text="neutral" />
+      <Button handleClick={() => settingBad(bad + 1)} text="bad" />
       <Display text="statistics" />
       <Data text="good" value={good} />
       <Data text="neutral" value={neutral} />
       <Data text="bad" value={bad} />
+      <Data text="all" value={total} />
+      <Data text="average" value={avg} />
+      <Data text="positive" value={pos + "%"} />
+      
     </div>
   )
 }

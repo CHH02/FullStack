@@ -15,8 +15,17 @@ const Data = ({ text, value }) => {
   return <p style={{ margin: 0}}>{text} {value}</p>
 }
 
-const Statistics = ({ text, value}) => {
-  return <p style={{ margin: 0}}>{text} {value}</p>
+const Statistics = ({ good, neutral, bad, total, avg, pos }) => {
+  return (
+    <div>
+      <Data text="good" value={good} />
+      <Data text="neutral" value={neutral} />
+      <Data text="bad" value={bad} />
+      <Data text="all" value={total} />
+      <Data text="average" value={avg} />
+      <Data text="positive" value={pos + "%"} />
+  </div>
+  )
 }
 
 const App = () => {
@@ -59,13 +68,7 @@ const App = () => {
       <Button handleClick={() => settingNeutral(neutral + 1)} text="neutral" />
       <Button handleClick={() => settingBad(bad + 1)} text="bad" />
       <Display text="statistics" />
-      <Data text="good" value={good} />
-      <Data text="neutral" value={neutral} />
-      <Data text="bad" value={bad} />
-      <Data text="all" value={total} />
-      <Data text="average" value={avg} />
-      <Statistics text="positive" value={pos + "%"} />
-      
+      <Statistics good={good} neutral={neutral} bad={bad} total={total} avg={avg} pos={pos} />
     </div>
   )
 }

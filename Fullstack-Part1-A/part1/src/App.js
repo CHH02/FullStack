@@ -15,6 +15,10 @@ const Data = ({ text, value }) => {
   return <p style={{ margin: 0}}>{text} {value}</p>
 }
 
+const Statistics = ({ text, value}) => {
+  return <p style={{ margin: 0}}>{text} {value}</p>
+}
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
@@ -60,7 +64,7 @@ const App = () => {
       <Data text="bad" value={bad} />
       <Data text="all" value={total} />
       <Data text="average" value={avg} />
-      <Data text="positive" value={pos + "%"} />
+      <Statistics text="positive" value={pos + "%"} />
       
     </div>
   )

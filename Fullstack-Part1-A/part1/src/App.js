@@ -16,16 +16,21 @@ const Data = ({ text, value }) => {
 }
 
 const Statistics = ({ good, neutral, bad, total, avg, pos }) => {
-  return (
-    <div>
-      <Data text="good" value={good} />
-      <Data text="neutral" value={neutral} />
-      <Data text="bad" value={bad} />
-      <Data text="all" value={total} />
-      <Data text="average" value={avg} />
-      <Data text="positive" value={pos + "%"} />
-  </div>
-  )
+  if (total == 0) {
+    return <Data text="No feedback given" value="" />
+  }
+  else {
+    return (
+      <div>
+        <Data text="good" value={good} />
+        <Data text="neutral" value={neutral} />
+        <Data text="bad" value={bad} />
+        <Data text="all" value={total} />
+        <Data text="average" value={avg} />
+        <Data text="positive" value={pos + "%"} />
+    </div>
+    )
+  }
 }
 
 const App = () => {

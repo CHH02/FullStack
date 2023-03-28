@@ -1,83 +1,37 @@
 import { useState } from 'react'
 
-const Button = ({ handleClick, text }) => {
-  console.log("Button: ", handleClick, text)
-  return <button onClick={handleClick}>{text}</button>
+const Display = () => {
+  return {}
 }
 
-const Display = ({ text }) => {
-  console.log("Display: ", text)
-  return <div><h1>{text}</h1></div>
-}
-
-const StatisticLine = ({ text, value }) => {
-  console.log("StatisticLine: ", text, value)
-  return <tr><td>{text}</td><td>{value}</td></tr>
-}
-
-const Statistics = ({ good, neutral, bad, total, avg, pos }) => {
-  if (total == 0) {
-    return <table><tbody><StatisticLine text="No feedback given" value="" /></tbody></table>
-  }
-  else {
-    return (
-      <div>
-        <table>
-          <tbody>
-            <StatisticLine text="good" value={good} />
-            <StatisticLine text="neutral" value={neutral} />
-            <StatisticLine text="bad" value={bad} />
-            <StatisticLine text="all" value={total} />
-            <StatisticLine text="average" value={avg} />
-            <StatisticLine text="positive" value={pos + "%"} />
-          </tbody>
-        </table>
-      </div>
-    )
-  }
+const Button = ({ handleClick }) => {
+  return <button onClick={handleClick}>next anecdote</button>
 }
 
 const App = () => {
-  // save clicks of each button to its own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-  const [total, setTotal] = useState(0)
-  const [avg, setAvg] = useState(0)
-  const [pos, setPos] = useState(0)
+  const anecdotes = [
+    'If it hurts, do it more often.',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
+    'The only way to go fast, is to go well.'
+  ]
+   
+  const [selected, setSelected] = useState(0)
 
-  const settingGood = newVal => {
-    setGood(newVal)
-    const updatedTotal = total + 1
-    setTotal(updatedTotal)
-    setAvg((newVal-bad)/updatedTotal)
-    setPos((newVal/updatedTotal)*100)
-  }
-
-  const settingNeutral = newVal => {
-    setNeutral(newVal)
-    const updatedTotal = total + 1
-    setTotal(updatedTotal)
-    setAvg((good-bad)/updatedTotal)
-    setPos((good/updatedTotal)*100)
-  }
-
-  const settingBad = newVal => {
-    setBad(newVal)
-    const updatedTotal = total + 1
-    setTotal(updatedTotal)
-    setAvg((good-newVal)/updatedTotal)
-    setPos((good/updatedTotal)*100)
+  const randomSelect = () => {
+    let newVal = Math.floor(Math.random()*anecdotes.length)
+    console.log('randomly generated number: ', newVal)
+    setSelected(newVal)
   }
 
   return (
     <div>
-      <Display text="give feedback" />
-      <Button handleClick={() => settingGood(good + 1)} text="good" />
-      <Button handleClick={() => settingNeutral(neutral + 1)} text="neutral" />
-      <Button handleClick={() => settingBad(bad + 1)} text="bad" />
-      <Display text="statistics" />
-      <Statistics good={good} neutral={neutral} bad={bad} total={total} avg={avg} pos={pos} />
+      <p style={{margin: 0}}>{anecdotes[selected]}</p>
+      <Button handleClick={randomSelect} />
     </div>
   )
 }

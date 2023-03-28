@@ -10,24 +10,24 @@ const Display = ({ text }) => {
   return <div><h1>{text}</h1></div>
 }
 
-const Data = ({ text, value }) => {
-  console.log("Data: ", text, value)
+const StatisticLine = ({ text, value }) => {
+  console.log("StatisticLine: ", text, value)
   return <p style={{ margin: 0}}>{text} {value}</p>
 }
 
 const Statistics = ({ good, neutral, bad, total, avg, pos }) => {
   if (total == 0) {
-    return <Data text="No feedback given" value="" />
+    return <StatisticLine text="No feedback given" value="" />
   }
   else {
     return (
       <div>
-        <Data text="good" value={good} />
-        <Data text="neutral" value={neutral} />
-        <Data text="bad" value={bad} />
-        <Data text="all" value={total} />
-        <Data text="average" value={avg} />
-        <Data text="positive" value={pos + "%"} />
+        <StatisticLine text="good" value={good} />
+        <StatisticLine text="neutral" value={neutral} />
+        <StatisticLine text="bad" value={bad} />
+        <StatisticLine text="all" value={total} />
+        <StatisticLine text="average" value={avg} />
+        <StatisticLine text="positive" value={pos + "%"} />
     </div>
     )
   }

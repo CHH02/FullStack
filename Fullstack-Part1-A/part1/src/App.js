@@ -12,23 +12,27 @@ const Display = ({ text }) => {
 
 const StatisticLine = ({ text, value }) => {
   console.log("StatisticLine: ", text, value)
-  return <p style={{ margin: 0}}>{text} {value}</p>
+  return <tr><td>{text}</td><td>{value}</td></tr>
 }
 
 const Statistics = ({ good, neutral, bad, total, avg, pos }) => {
   if (total == 0) {
-    return <StatisticLine text="No feedback given" value="" />
+    return <table><tbody><StatisticLine text="No feedback given" value="" /></tbody></table>
   }
   else {
     return (
       <div>
-        <StatisticLine text="good" value={good} />
-        <StatisticLine text="neutral" value={neutral} />
-        <StatisticLine text="bad" value={bad} />
-        <StatisticLine text="all" value={total} />
-        <StatisticLine text="average" value={avg} />
-        <StatisticLine text="positive" value={pos + "%"} />
-    </div>
+        <table>
+          <tbody>
+            <StatisticLine text="good" value={good} />
+            <StatisticLine text="neutral" value={neutral} />
+            <StatisticLine text="bad" value={bad} />
+            <StatisticLine text="all" value={total} />
+            <StatisticLine text="average" value={avg} />
+            <StatisticLine text="positive" value={pos + "%"} />
+          </tbody>
+        </table>
+      </div>
     )
   }
 }

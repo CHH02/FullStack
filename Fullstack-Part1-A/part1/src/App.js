@@ -4,8 +4,8 @@ const Display = () => {
   return {}
 }
 
-const Button = ({ handleClick }) => {
-  return <button onClick={handleClick}>next anecdote</button>
+const Button = ({ handleClick, text }) => {
+  return <button onClick={handleClick}>{text}</button>
 }
 
 const App = () => {
@@ -19,19 +19,28 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
+
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 })
 
   const randomSelect = () => {
-    let newVal = Math.floor(Math.random()*anecdotes.length)
+    let newVal = Math.floor(Math.random() * anecdotes.length)
     console.log('randomly generated number: ', newVal)
     setSelected(newVal)
   }
 
+  const setVote = () => {
+    const newVotes = { ...votes }
+    newVotes[selected] += 1
+    setVotes(newVotes)
+    console.log('votes = ', newVotes)
+  }
+
   return (
     <div>
-      <p style={{margin: 0}}>{anecdotes[selected]}</p>
-      <Button handleClick={randomSelect} />
+      <p style={{ margin: 0 }}>{anecdotes[selected]}</p>
+      <Button handleClick={setVote} text='vote' />
+      <Button handleClick={randomSelect} text='next anecdote' />
     </div>
   )
 }

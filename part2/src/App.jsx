@@ -27,7 +27,7 @@ const Content = (props) => {
 // Total component for calculating a sum of exercises displaying in our App component seen further below
 const Total = (props) => {
   console.log(props)
-  return <p><strong>Number of exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}</strong></p>
+  return <p><strong>Number of exercises {props.parts.reduce((sum, part) => sum + part.exercises, 0)}</strong></p>
 }
 
 // Course component for dispalying a course in the App component seen further below

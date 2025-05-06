@@ -31,3 +31,36 @@ const Total = (props) => {
   return <p><strong>Number of exercises {props.parts.reduce((sum, part) => sum + part.exercises, 0)}</strong></p>
 }
 ```
+
+### Ex 2.4
+- modified Ex 2.3 app to support displaying information for multiple courses.  
+![PNG of CHH02's Exercise 2.4 submission](./public/Ex2-4_Screenshot.png)
+```JSX
+// App component for displaying FullStackOpen's course information
+const App = () => {
+  const courses = [
+    /* courses' information would be here
+        here is an example format for a course:
+    {
+      name: 'course name'
+      id: 1,
+      parts: [
+        {
+          name: 'part name',
+          exercises: 10,
+          id: 1
+        }
+      ]
+    }
+    */
+  ]
+
+  /* solution: used the 'map' array function to implement the support for multiple courses as seen below */
+  return (
+    <div>
+      <h1>Web development curriculum</h1>
+      {courses.map(course => <Course course={course} key={course.id} />)}
+    </div>
+  )
+}
+```

@@ -9,11 +9,11 @@ This is for the submission of exercises 2.1-2.20 of the Full OpenStack course. S
 
 ### Ex 2.1
 - modified Ex 1.5 app with a modularized course component section, e.g., a course component outside of the app component for dispalying course information.  
-![PNG of CHH02's Exercise 2.1 submission](./public/Ex2-1_Screenshot.png)
+<br>![PNG of CHH02's Exercise 2.1 submission](./public/Ex2-1_Screenshot.png)
 
 ### Ex 2.2
  - modified Ex 2.1 to include the total number of exercises
-![PNG of CHH02's Exercise 2.2 submission](./public/Ex2-2_Screenshot.png)
+<br>![PNG of CHH02's Exercise 2.2 submission](./public/Ex2-2_Screenshot.png)
 ```JSX
 // Total component for calculating a sum of exercises displaying in our App component seen further below
 const Total = (props) => {
@@ -34,7 +34,7 @@ const Total = (props) => {
 
 ### Ex 2.4
 - modified Ex 2.3 app to support displaying information for multiple courses.  
-![PNG of CHH02's Exercise 2.4 submission](./public/Ex2-4_Screenshot.png)
+<br>![PNG of CHH02's Exercise 2.4 submission](./public/Ex2-4_Screenshot.png)
 ```JSX
 // App component for displaying FullStackOpen's course information
 const App = () => {
@@ -64,3 +64,7 @@ const App = () => {
   )
 }
 ```
+
+### Ex 2.5
+- modified Ex 2.4 app to separate the Course component and subcomponents into their own .jsx file from the App component .jsx file.
+<br>![PNG of CHH02's Exercise 2.5 submission](./public/Ex2-5_Screenshot.png)

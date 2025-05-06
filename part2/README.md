@@ -8,4 +8,9 @@ This is for the submission of exercises 2.1-2.20 of the Full OpenStack course. S
 ## My Apps
 
 ### Ex 2.1
-![PNG of CHH02's Exercise 2.1 submission](./public/Ex2-1_Screenshot.png)
+- modified Ex 1.5 app with a modularized course component section, e.g., a course component outside of the app component for dispalying course information.  
+<br>![PNG of CHH02's Exercise 2.1 submission](./public/Ex2-1_Screenshot.png)
+
+### Ex 2.2
+ - modified Ex 2.1 to include the total number of exercises
+![PNG of CHH02's Exercise 2.2 submission](./public/Ex2-2_Screenshot.png)

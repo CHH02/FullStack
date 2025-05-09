@@ -7,11 +7,12 @@ This is for the submission of exercises 2.1-2.20 of the Full OpenStack course. S
 
 ## My Apps
 
-### Ex 2.1
+### Apps 2.1-2.5
+#### Ex 2.1
 - modified Ex 1.5 app with a modularized course component section, e.g., a course component outside of the app component for dispalying course information.  
 <br>![PNG of CHH02's Exercise 2.1 submission](./public/Ex2-1_Screenshot.png)
 
-### Ex 2.2
+#### Ex 2.2
  - modified Ex 2.1 to include the total number of exercises
 <br>![PNG of CHH02's Exercise 2.2 submission](./public/Ex2-2_Screenshot.png)
 ```JSX
@@ -22,7 +23,7 @@ const Total = (props) => {
 }
 ```
 
-### Ex 2.3
+#### Ex 2.3
  - modified Ex 2.2 to calculate the total number of exercises using the [reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) array function.
 ```JSX
 // Total component for calculating a sum of exercises displaying in our App component seen further below
@@ -32,7 +33,7 @@ const Total = (props) => {
 }
 ```
 
-### Ex 2.4
+#### Ex 2.4
 - modified Ex 2.3 app to support displaying information for multiple courses.  
 <br>![PNG of CHH02's Exercise 2.4 submission](./public/Ex2-4_Screenshot.png)
 ```JSX
@@ -65,6 +66,52 @@ const App = () => {
 }
 ```
 
-### Ex 2.5
+#### Ex 2.5
 - modified Ex 2.4 app to separate the Course component and subcomponents into their own .jsx file from the App component .jsx file.
 <br>![PNG of CHH02's Exercise 2.5 submission](./public/Ex2-5_Screenshot.png)
+
+### Apps 2.6-2.10
+#### Ex 2.6
+- Created a simple phonebook. This exercise focuses on implementing the use of an HTML form into a phonebook react application. Below is my code for my "App.jsx" component which showcases how I implented this html form into the phonebook application. Please also see [Fullstack Part 2 Ex 2.6](https://fullstackopen.com/en/part2/forms#:~:text=2.6%3A%20The%20Phonebook%20Step%201) for more info.
+```JSX
+import { useState } from 'react'
+
+const App = () => {
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas' }
+  ]) 
+  const [newName, setNewName] = useState('')
+
+  const addName = (event) => {
+    event.preventDefault()
+    const nameObject = {
+      name: newName,
+    }
+    setPersons(persons.concat(nameObject))
+    setNewName('')
+  }
+
+  const handleNameChange = (event) => {
+    console.log(event.target.value);
+    setNewName(event.target.value)    
+  }
+  
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <form onSubmit={addName}>
+        <div>
+          name: <input value={newName} onChange={handleNameChange} />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      {persons.map(person => <li key={person.name}>{person.name}</li>)}
+    </div>
+  )
+}
+
+export default App
+```

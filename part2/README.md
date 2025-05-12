@@ -130,3 +130,53 @@ const addName = (event) => {
   }
 ``` 
 Specifically the ternary operator is used to check whether there is already "[some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)" person in the array of persons whose name is the same as the one being submitted, if so then raise an [alert](https://developer.mozilla.org/en-US/docs/Web/API/Window/alert) or if not then add that person to the phonebook.
+
+#### Ex 2.8
+- Modified 2.7's phonebook accordingly below:
+```JSX
+  ...
+  const [newNumber, setNewNumber] = useState('') // new state variable to track a person's number
+
+  // use new state variable when adding a new person to phonebook
+  const addPerson = (event) => {
+    event.preventDefault()
+    const nameObject = {
+      name: newName,
+      number: newNumber,
+    }
+
+    {(persons.some(person => person.name === nameObject.name)) ? alert(`${nameObject.name} is already added to phonebook`) : setPersons(persons.concat(nameObject))}
+    setNewName('')
+    setNewNumber('')
+  }
+
+  ...
+
+  // track changes made to the number inputted into application
+  const handleNumberChange = (event) => {
+    console.log(event.target.value)
+    setNewNumber(event.target.value)    
+  }
+  
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <form onSubmit={addPerson}>
+        <div>
+          name: <input value={newName} onChange={handleNameChange} />
+        </div>
+        {/* input field to add a number of a person into the phonebook */}
+        <div>
+          number: <input value={newNumber} onChange={handleNumberChange} />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      {/* updated display to display a person's number as well */}
+      {persons.map(person => <li key={person.name}>{person.name} {person.number}</li>)}
+    </div>
+  )
+}
+```

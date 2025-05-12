@@ -115,3 +115,18 @@ const App = () => {
 
 export default App
 ```
+
+#### Ex 2.7
+- Improved 2.6's simple phonebook by sanitizing the input into the phonebook. Now the exact same name cannot be submitted twice into the phonebook using the modified code below:
+```JSX
+const addName = (event) => {
+    event.preventDefault()
+    const nameObject = {
+      name: newName,
+    }
+
+    {(persons.some(person => person.name === nameObject.name)) ? alert(`${nameObject.name} is already added to phonebook`) : setPersons(persons.concat(nameObject))}
+    setNewName('')
+  }
+``` 
+Specifically the ternary operator is used to check whether there is already "[some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)" person in the array of persons whose name is the same as the one being submitted, if so then raise an [alert](https://developer.mozilla.org/en-US/docs/Web/API/Window/alert) or if not then add that person to the phonebook.

@@ -24,17 +24,34 @@ const App = () => {
       name: newName,
       number: newNumber,
     }
+    
+    const samePerson = persons.find(person => person.name === nameObject.name)
 
     {
-      (persons.some(person => person.name === nameObject.name))
+      (samePerson !== undefined && samePerson.number === nameObject.number)
       ? alert(`${nameObject.name} is already added to phonebook`)
-      : personService
-          .create(nameObject)
-          .then(returnedPerson => {
-            setPersons(persons.concat(returnedPerson))
-            setNewName('')
-            setNewNumber('')
-          })
+      : (samePerson !== undefined && samePerson.number !== nameObject.number)
+        ? updatePerson(samePerson, nameObject.number)
+        : personService
+            .create(nameObject)
+            .then(returnedPerson => {
+              setPersons(persons.concat(returnedPerson))
+              setNewName('')
+              setNewNumber('')
+            })
+    }
+  }
+
+  const updatePerson = (person, number) => {
+    if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
+      personService
+        .update(person.id, {...person, number: number})
+        .then(returnedPerson => {
+          console.log(returnedPerson)
+          setPersons(persons.map(n => n.id === person.id ? returnedPerson : n))
+          setNewName('')
+          setNewNumber('')
+        })
     }
   }
 
@@ -43,10 +60,9 @@ const App = () => {
       personService
           .remove(person.id)
           .then(returnedPerson => {
-            console.log(returnedPerson);
+            console.log(returnedPerson)
+            setPersons(persons.filter(n => n.id !== person.id))
           })
-      
-      setPersons(persons.filter(n => n.id !== person.id))
     }
   }
 

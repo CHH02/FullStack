@@ -203,3 +203,6 @@ Specifically the ternary operator is used to check whether there is already "[so
 
 #### Ex 2.14
 - Modified ex 2.13's phonebook to add functionality for deleting data from the backend server
+
+#### Ex 2.15
+- Modified ex 2.14's phonebook to add functionality for updating/changing previously added/saved data to the server using HTTP PUT.

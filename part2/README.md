@@ -221,3 +221,6 @@ Specifically the ternary operator is used to check whether there is already "[so
 
 #### Ex 2.18
 - App that accepts a filter from the user to display different country's information. If more than 10 matches then it querries user to provide a more specific filter. If only one match then it displays general information for that one country. Otherwise lists the countries whose common name matches the filter.
+
+#### Ex 2.19
+- Modified 2.18's app to include a "show" button next to countries displayed when the filter has matched with more than one but less than 11. This button allows the user to select a country to display its information without having to make their filter more specific.

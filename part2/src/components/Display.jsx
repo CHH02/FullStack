@@ -1,4 +1,4 @@
-const Display = ({ data }) => {
+const Display = ({ data, setToDisplay }) => {
     
     if (!data) {
         return ''
@@ -21,7 +21,7 @@ const Display = ({ data }) => {
             </>
         )
     } else {
-        return data.map(n => <li key={n.name.common}>{n.name.common}</li>)
+        return data.map(n => <li key={n.name.common}>{n.name.common} <button onClick={() => setToDisplay([n])} >show</button></li>)
     }
 }
 

@@ -17,20 +17,18 @@ const App = () => {
 
   const handleChange = (event) => {
     setFilter(event.target.value)
+    const value = event.target.value.toLowerCase()
     setToDisplay(
-      (event.target.value === '')
+      (value === '')
       ? null
-      : countries.filter(n => n.name.common.includes(event.target.value))
+      : countries.filter(n => n.name.common.toLowerCase().includes(value))
     )
-  }
-
-  const onSearch = () => {
   }
 
   return (
     <div>
       find countries <input value={filter} onChange={handleChange} />
-      <Display data={toDisplay} />
+      <Display data={toDisplay} setToDisplay={setToDisplay} />
     </div>
   ) 
 }

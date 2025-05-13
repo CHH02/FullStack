@@ -197,3 +197,9 @@ Specifically the ternary operator is used to check whether there is already "[so
 ### Ex 2.12-2.15
 #### Ex 2.12
 - Modified ex 2.11's phonebook to not only retreive our data (e.g., persons) from the (backend) server (i.e., json-server) but also save/add data to the server.
+
+#### Ex 2.13
+- Modified ex 2.12's phonebook to extract the communication to the server into its own service file.
+
+#### Ex 2.14
+- Modified ex 2.13's phonebook to add functionality for deleting data from the backend server

@@ -190,3 +190,6 @@ Specifically the ternary operator is used to check whether there is already "[so
 
 #### Ex 2.10
 - Refactored app ex 2.9 into separate jsx files to render their respective components (i.e., Filter, PersonForm, and Persons components). See [Fullstackopen's Ex 2.10](https://fullstackopen.com/en/part2/forms#:~:text=2.10%3A%20The%20Phonebook%20Step%205) directions for more info.
+
+### Ex 2.11
+- Modified the phonebook application such that the initial state of the data is fetched from the server using the axios-library. Complete the fetching with an Effect hook.

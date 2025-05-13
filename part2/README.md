@@ -193,3 +193,7 @@ Specifically the ternary operator is used to check whether there is already "[so
 
 ### Ex 2.11
 - Modified the phonebook application such that the initial state of the data is fetched from the server using the axios-library. Complete the fetching with an Effect hook.
+
+### Ex 2.12-2.15
+#### Ex 2.12
+- Modified ex 2.11's phonebook to not only retreive our data (e.g., persons) from the (backend) server (i.e., json-server) but also save/add data to the server.

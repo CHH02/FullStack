@@ -206,3 +206,12 @@ Specifically the ternary operator is used to check whether there is already "[so
 
 #### Ex 2.15
 - Modified ex 2.14's phonebook to add functionality for updating/changing previously added/saved data to the server using HTTP PUT.
+
+### Ex 2.16-2.17
+- Goal was to modify the phonebook application with css styling
+
+#### Ex 2.16
+- Modified 2.15's application to display a notification to the screen when a person is added or updated in the phonebook, styled with css.
+
+#### Ex 2.17
+- Modified 2.16's application to handle potential uncaught promises when adding and updating persons in the phonebook. Sends an error notification to the display styled with css.

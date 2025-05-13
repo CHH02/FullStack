@@ -10,7 +10,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [successMessage, setSuccesssMessage] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [typeOfMessage, setTypeOfMessage] = useState('')
 
   useEffect(() => {
     personService
@@ -40,9 +41,17 @@ const App = () => {
               setPersons(persons.concat(returnedPerson))
               setNewName('')
               setNewNumber('')
-              setSuccesssMessage(`Added ${returnedPerson.name}`)
+              setTypeOfMessage('success')
+              setMessage(`Added ${returnedPerson.name}`)
               setTimeout(() => {
-                setSuccesssMessage(null)
+                setMessage(null)
+              }, 5000);
+            })
+            .catch(error => {
+              setTypeOfMessage('error')
+              setMessage(`Information of ${nameObject.name} has already been removed from server`)
+              setTimeout(() => {
+                setMessage(null)
               }, 5000);
             })
     }
@@ -57,10 +66,18 @@ const App = () => {
           setPersons(persons.map(n => n.id === person.id ? returnedPerson : n))
           setNewName('')
           setNewNumber('')
-          setSuccesssMessage(`Updated ${returnedPerson.name}`)
+          setTypeOfMessage('success')
+          setMessage(`Updated ${returnedPerson.name}`)
           setTimeout(() => {
-            setSuccesssMessage(null)
+            setMessage(null)
           }, 5000)
+        })
+        .catch(error => {
+          setTypeOfMessage('error')
+          setMessage(`Information of ${person.name} has already been removed from server`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000);
         })
     }
   }
@@ -96,7 +113,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={message} type={typeOfMessage} />
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h3>add a new</h3>
       <PersonForm

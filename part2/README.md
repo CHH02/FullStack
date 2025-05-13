@@ -215,3 +215,9 @@ Specifically the ternary operator is used to check whether there is already "[so
 
 #### Ex 2.17
 - Modified 2.16's application to handle potential uncaught promises when adding and updating persons in the phonebook. Sends an error notification to the display styled with css.
+
+### Ex 2.18-2.20
+- Focuses on an application for different country's information
+
+#### Ex 2.18
+- App that accepts a filter from the user to display different country's information. If more than 10 matches then it querries user to provide a more specific filter. If only one match then it displays general information for that one country. Otherwise lists the countries whose common name matches the filter.

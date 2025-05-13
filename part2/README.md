@@ -182,8 +182,11 @@ Specifically the ternary operator is used to check whether there is already "[so
 ```
 
 #### Ex 2.9
-- modified app from ex 2.8 to include a case insensitive search field to filter the list of people by name in the phonebook. See [Fullstackopen's Ex 2.9](https://fullstackopen.com/en/part2/forms#:~:text=2.6%3A%20The%20Phonebook%20Step%201) directions for more info. Acheived this by adding a new state (i.e., "newFilter" variable) variable to track the filter and used it in the logic seen below to determine which people to display accordingly.
+- Modified app from ex 2.8 to include a case insensitive search field to filter the list of people by name in the phonebook. See [Fullstackopen's Ex 2.9](https://fullstackopen.com/en/part2/forms#:~:text=2.9*%3A%20The%20Phonebook%20Step%204) directions for more info. Acheived this by adding a new state (i.e., "newFilter" variable) variable to track the filter and used it in the logic seen below to determine which people to display accordingly.
 ```JSX
   const personsToShow = (newFilter === '') ? persons : persons.filter(person => person.name.toLowerCase().includes(newFilter.toLowerCase()))
 
 ```
+
+#### Ex 2.10
+- Refactored app ex 2.9 into separate jsx files to render their respective components (i.e., Filter, PersonForm, and Persons components). See [Fullstackopen's Ex 2.10](https://fullstackopen.com/en/part2/forms#:~:text=2.10%3A%20The%20Phonebook%20Step%205) directions for more info.

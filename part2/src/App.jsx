@@ -6,6 +6,8 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const [countries, setCountries] = useState([])
   const [toDisplay, setToDisplay] = useState(null)
+  const [weather, setWeather] = useState('')
+  const api_key = import.meta.env.VITE_SOME_KEY
 
   useEffect(() => {
     axios
@@ -14,6 +16,20 @@ const App = () => {
         setCountries(response.data)
       })
   }, [])
+
+  useEffect(() => {
+    if (toDisplay && toDisplay.length === 1) {      
+      axios
+        .get(`https://api.openweathermap.org/data/2.5/weather?q=${toDisplay[0].capital[0]}&units=metric&appid=${api_key}`)
+        .then(response => setWeather(
+          <>
+            <p>Temperature {response.data.main.temp} Celsius</p>
+            <img src={`https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`} alt="Weather Icon" />
+            <p>Wind {response.data.wind.speed} m/s</p>
+          </>
+        ))
+    }
+  }, [toDisplay])
 
   const handleChange = (event) => {
     setFilter(event.target.value)
@@ -25,10 +41,16 @@ const App = () => {
     )
   }
 
+  const singleMatch = () => {
+    setMatch(!match)
+  }
+
   return (
     <div>
       find countries <input value={filter} onChange={handleChange} />
-      <Display data={toDisplay} setToDisplay={setToDisplay} />
+      <Display
+        data={toDisplay} weather={weather} setToDisplay={setToDisplay}
+      />
     </div>
   ) 
 }

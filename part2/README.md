@@ -224,3 +224,6 @@ Specifically the ternary operator is used to check whether there is already "[so
 
 #### Ex 2.19
 - Modified 2.18's app to include a "show" button next to countries displayed when the filter has matched with more than one but less than 11. This button allows the user to select a country to display its information without having to make their filter more specific.
+
+#### Ex 2.20
+- Added weather of the capital of the selected country when displaying a country's information. Used openweather's free weather API to get the weather information. Took time to understand a/the correct way to use the effect hook for calling the API to get the weather to display.

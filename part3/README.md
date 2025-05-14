@@ -12,3 +12,7 @@ This is for the submission of exercises 3.1-3.22 of the Full OpenStack course. S
 
 #### Ex 3.3
 - Implemented the functionality for displaying the information for a single phonebook entry, e.g., .../api/person/{id_of_resource_here}.
+
+#### Ex 3.4
+- Implemented functionality for deleting a single phonebook entry from the server.
+<br>![PNG of CHH02's Ex 3.4 being tested by Postman](./public/Ex3-4_Screenshot.png)

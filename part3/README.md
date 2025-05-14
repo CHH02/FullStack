@@ -5,4 +5,7 @@ This is for the submission of exercises 3.1-3.22 of the Full OpenStack course. S
 
 ### Apps 3.1-3.8
 #### Ex 3.1
-- Implemented a Node application that returns a hardcoded list of phonebook entries
+- Implemented a Node application that returns a hardcoded list of phonebook entries at .../api/persons.
+
+#### Ex 3.2
+- Implemented a page at .../info that displays how many people are currently in the phonebook and at what time the server received this get request.

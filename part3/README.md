@@ -54,3 +54,14 @@ app.post('/api/persons', (request, response) => {
 })
 ```
 <br>![PNG of CHH02's Ex 3.6 being tested by Postman](./public/Ex3-6_Screenshot.png)
+
+#### Ex 3.8
+- Added the [morgan]() middleware to the phonebook application for logging requests made to the server on the backend.
+```Bash
+npm install morgan
+```
+```JS
+const morgan = require('morgan')
+...
+app.use(morgan)
+```

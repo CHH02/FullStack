@@ -9,3 +9,6 @@ This is for the submission of exercises 3.1-3.22 of the Full OpenStack course. S
 
 #### Ex 3.2
 - Implemented a page at .../info that displays how many people are currently in the phonebook and at what time the server received this get request.
+
+#### Ex 3.3
+- Implemented the functionality for displaying the information for a single phonebook entry, e.g., .../api/person/{id_of_resource_here}.

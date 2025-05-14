@@ -55,13 +55,25 @@ app.post('/api/persons', (request, response) => {
 ```
 <br>![PNG of CHH02's Ex 3.6 being tested by Postman](./public/Ex3-6_Screenshot.png)
 
-#### Ex 3.8
-- Added the [morgan]() middleware to the phonebook application for logging requests made to the server on the backend.
+#### Ex 3.7
+- Added the [morgan](https://github.com/expressjs/morgan) middleware to the phonebook application for logging requests made to the server on the backend.
 ```Bash
 npm install morgan
 ```
 ```JS
 const morgan = require('morgan')
 ...
-app.use(morgan)
+app.use(morgan('tiny'))
+```
+
+#### Ex 3.8
+- Configured morgan so that it also shows the data sent with requests, e.g., with HTTP POST requests.
+<br>![PNG of CHH02's Ex 3.8 logging requests to the console](./public/Ex3-8_Screenshot.png)
+<br>
+```JS
+// created a custon morgan token and stringify'd it to print to the console
+morgan.token('body', request => JSON.stringify(request.body))
+...
+// modified morgan middleware paramaters to accept the custom token created above
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 ```

@@ -16,3 +16,7 @@ This is for the submission of exercises 3.1-3.22 of the Full OpenStack course. S
 #### Ex 3.4
 - Implemented functionality for deleting a single phonebook entry from the server.
 <br>![PNG of CHH02's Ex 3.4 being tested by Postman](./public/Ex3-4_Screenshot.png)
+
+#### Ex 3.5
+- Expanded the backend so new phonebook entries can be added by using HTTP POST requests to .../api/persons.
+<br>![PNG of CHH02's Ex 3.5 being tested by Postman](./public/Ex3-5_Screenshot.png)

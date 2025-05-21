@@ -70,10 +70,47 @@ app.use(morgan('tiny'))
 - Configured morgan so that it also shows the data sent with requests, e.g., with HTTP POST requests.
 <br>![PNG of CHH02's Ex 3.8 logging requests to the console](./public/Ex3-8_Screenshot.png)
 <br>
+
 ```JS
 // created a custon morgan token and stringify'd it to print to the console
 morgan.token('body', request => JSON.stringify(request.body))
 ...
 // modified morgan middleware paramaters to accept the custom token created above
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+```
+
+### Apps 3.9-3.11
+- Examples that modify the phonebook frontend application made in Ex 2.17 to work with the phonebook backend application made in 3.8, and then deploy this to the internet.
+
+#### Ex 3.9
+- Modify the phonebook application's frontend and backend to work with eachother.
+```JS
+// modify the persons.js file from Ex 2.17's frontend phonebook application
+// change baseUrl to our backend phonebook application from Ex 3.8
+// before: const baseUrl = 'http://localhost:3001/persons' 
+// after:  const baseUrl = 'http://localhost:3001/api/persons'
+import axios from 'axios'
+const baseUrl = 'http://localhost:3001/api/persons'
+
+const getAll = () => {...}
+
+const create = newObject => {...}
+
+const remove = id => {...}
+
+const update = (id, newObject) => {...}
+
+export default { getAll, create, remove, update }
+```
+
+```JS
+// install "npm install cors" on the backend application from Ex 3.8
+// then modify the backend's index.js file to use this cors to address
+// same origin policy conflict
+const express = require('express')
+const morgan = require('morgan')
+const cors = require('cors')
+const app = express()
+...
+app.use(cors)
 ```

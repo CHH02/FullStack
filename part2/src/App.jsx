@@ -1,58 +1,130 @@
-import axios from 'axios'
-import { useState, useEffect, use } from 'react'
-import Display from './components/Display'
+import { useState, useEffect } from 'react'
+import personService from './services/persons'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 const App = () => {
-  const [filter, setFilter] = useState('')
-  const [countries, setCountries] = useState([])
-  const [toDisplay, setToDisplay] = useState(null)
-  const [weather, setWeather] = useState('')
-  const api_key = import.meta.env.VITE_SOME_KEY
+  const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [newFilter, setNewFilter] = useState('')
+  const [message, setMessage] = useState(null)
+  const [typeOfMessage, setTypeOfMessage] = useState('')
 
   useEffect(() => {
-    axios
-      .get('https://studies.cs.helsinki.fi/restcountries/api/all')
-      .then(response => {
-        setCountries(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
-  }, [])
-
-  useEffect(() => {
-    if (toDisplay && toDisplay.length === 1) {      
-      axios
-        .get(`https://api.openweathermap.org/data/2.5/weather?q=${toDisplay[0].capital[0]}&units=metric&appid=${api_key}`)
-        .then(response => setWeather(
-          <>
-            <p>Temperature {response.data.main.temp} Celsius</p>
-            <img src={`https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`} alt="Weather Icon" />
-            <p>Wind {response.data.wind.speed} m/s</p>
-          </>
-        ))
+  }, [])  
+  
+  const addPerson = (event) => {
+    event.preventDefault()
+    const nameObject = {
+      name: newName,
+      number: newNumber,
     }
-  }, [toDisplay])
+    
+    const samePerson = persons.find(person => person.name === nameObject.name)
 
-  const handleChange = (event) => {
-    setFilter(event.target.value)
-    const value = event.target.value.toLowerCase()
-    setToDisplay(
-      (value === '')
-      ? null
-      : countries.filter(n => n.name.common.toLowerCase().includes(value))
-    )
+    {
+      (samePerson !== undefined && samePerson.number === nameObject.number)
+      ? alert(`${nameObject.name} is already added to phonebook`)
+      : (samePerson !== undefined && samePerson.number !== nameObject.number)
+        ? updatePerson(samePerson, nameObject.number)
+        : personService
+            .create(nameObject)
+            .then(returnedPerson => {
+              setPersons(persons.concat(returnedPerson))
+              setNewName('')
+              setNewNumber('')
+              setTypeOfMessage('success')
+              setMessage(`Added ${returnedPerson.name}`)
+              setTimeout(() => {
+                setMessage(null)
+              }, 5000);
+            })
+            .catch(error => {
+              setTypeOfMessage('error')
+              setMessage(`Information of ${nameObject.name} has already been removed from server`)
+              setTimeout(() => {
+                setMessage(null)
+              }, 5000);
+            })
+    }
   }
 
-  const singleMatch = () => {
-    setMatch(!match)
+  const updatePerson = (person, number) => {
+    if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
+      personService
+        .update(person.id, {...person, number: number})
+        .then(returnedPerson => {
+          console.log(returnedPerson)
+          setPersons(persons.map(n => n.id === person.id ? returnedPerson : n))
+          setNewName('')
+          setNewNumber('')
+          setTypeOfMessage('success')
+          setMessage(`Updated ${returnedPerson.name}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setTypeOfMessage('error')
+          setMessage(`Information of ${person.name} has already been removed from server`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000);
+        })
+    }
   }
+
+  const deletePerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`) === true) {
+      personService
+          .remove(person.id)
+          .then(returnedPerson => {
+            console.log(returnedPerson)
+            setPersons(persons.filter(n => n.id !== person.id))
+          })
+    }
+  }
+
+  const handleNameChange = (event) => {
+    console.log(event.target.value)
+    setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    console.log(event.target.value)
+    setNewNumber(event.target.value)    
+  }
+
+  const handleFilterChange = (event) => {
+    console.log(event.target.value)
+    setNewFilter(event.target.value)
+  }
+  
+  const personsToShow = (newFilter === '') ? persons : persons.filter(person => person.name.toLowerCase().includes(newFilter.toLowerCase()))
 
   return (
     <div>
-      find countries <input value={filter} onChange={handleChange} />
-      <Display
-        data={toDisplay} weather={weather} setToDisplay={setToDisplay}
+      <h2>Phonebook</h2>
+      <Notification message={message} type={typeOfMessage} />
+      <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
+      <h3>add a new</h3>
+      <PersonForm
+        addPerson={addPerson} 
+        newName={newName} handleNameChange={handleNameChange}
+        newNumber={newNumber} handleNumberChange={handleNumberChange}
       />
+      <h3>Numbers</h3>
+      <Persons personsToShow={personsToShow} deletePerson={deletePerson} />
     </div>
-  ) 
+  )
 }
 
 export default App

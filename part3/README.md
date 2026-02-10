@@ -114,3 +114,71 @@ const app = express()
 ...
 app.use(cors)
 ```
+
+#### Ex 3.10
+- Deploy the phonebook application's backend modified in Ex 3.9 above to the internet
+ - Note: I used render to do it, here is the [link](https://render-test-ushk.onrender.com)
+```JS
+// modify the backend's index.js file to listen to Render's port provided in the environment when deployed to the internet
+// before: const PORT = 3001
+// after: const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001
+```
+- The following changes were made for development purposes:
+```JS
+// for development purposes, modify vite.config.js to proxy to backend
+// so we can remove cors and run our build locally like it is seen on render (the internet)
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    }
+  },
+})
+```
+```JS
+// Uninstall "npm revmove cors" on the backend application from Ex 3.9.
+// Then modify the backend's index.js file to remove cors
+const express = require('express')
+const morgan = require('morgan')
+//const cors = require('cors') -> deleted
+const app = express()
+...
+//app.use(cors) -> deleted
+```
+
+#### Ex 3.11
+- Deploy the phonebook application's frontend modified in Ex 3.9 above to the internet through the backend from Ex 3.10
+ - Note: I used render to do it, here is the [link](https://render-test-ushk.onrender.com)
+```JS
+// modify the persons.js file from Ex 3.9's frontend phonebook application
+// change baseUrl to use relative URL since here the frontend and backend have the same address 
+// before:  const baseUrl = 'http://localhost:3001/api/persons'
+// after: const baseUrl = '/api/persons'
+import axios from 'axios'
+const baseUrl = '/api/persons'
+
+const getAll = () => {...}
+
+const create = newObject => {...}
+
+const remove = id => {...}
+
+const update = (id, newObject) => {...}
+
+export default { getAll, create, remove, update }
+```
+```JS
+// modify index.js file from Ex 3.10's backend phonebook application
+// to serve our frontend build in 'dist' as static files
+...
+app.use(express.static('dist'))
+```

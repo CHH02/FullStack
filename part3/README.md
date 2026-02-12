@@ -1,6 +1,15 @@
 # FullStack-Part3
 This is for the submission of exercises 3.1-3.22 of the Full OpenStack course. See Full Stack open part 3 [here](https://fullstackopen.com/en/part3)
 
+## Objective
+- Ex 3.11
+  - Description:
+    - ex 3.1-3.6 are exercises for creating a backend api server for the phonebook application from ex 2.17 using Node js and Express.
+    - ex 3.7-3.8 are exercises for understanding middleware, here we implement [Morgan](https://github.com/expressjs/morgan) as middleware for this purpose.
+    - ex 3.9-3.11 are exercises that connect ex 2.17's phonebook application to this phonebook backend and to then deploy it to the internet. Here we use render to deploy our backend web service that also servers the phonebook frontend's production build statically.
+  - Live View:
+    - This React App can be seen [here](https://render-test-ushk.onrender.com) (https://render-test-ushk.onrender.com)
+
 ## My Apps
 
 ### Apps 3.1-3.8

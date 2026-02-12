@@ -7,3 +7,15 @@
 [submodule "part1/anecdotes"]
 	path = part1/anecdotes
 	url = git@github.com:CHH02/FullStack-anecdotes.git
+[submodule "part2/courseinfo"]
+	path = part2/courseinfo
+	url = git@github.com:CHH02/FullStack-Part2-courseinfo.git
+[submodule "part2/phonebook"]
+	path = part2/phonebook
+	url = git@github.com:CHH02/FullStack-phonebook.git
+[submodule "part2/countries"]
+	path = part2/countries
+	url = git@github.com:CHH02/FullStack-countries.git
+[submodule "part3/phonebook-backend"]
+	path = part3/phonebook-backend
+	url = git@github.com:CHH02/FullStack-phonebook-backend.git

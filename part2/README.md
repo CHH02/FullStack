@@ -3,11 +3,30 @@ This is for the submission of exercises 2.1-2.20 of the Full OpenStack course. S
 
 ## Objective
 - Ex 2.5
+  - Description:
     - ex 2.1-2.5 are exercises that implement better practices on ex 1.5's application, e.g., using higher-order functions and modularity for optimization.
+  - Live View:
+    - This React App can be seen [here](https://chh02.github.io/FullStack-Part2-courseinfo/) (https://chh02.github.io/FullStack-Part2-courseinfo/)
 
-## My Apps
+- Ex 2.17
+  - Description:
+    - ex 2.6-2.10 are exercises that develop a phonebook application that stores contact information (phone number and name). We first focus on using forms to collect data and higher-order functions to diplay filtered results.
+    - ex 2.11 is an exercise to seperate our stored user data from ex 2.10 to a [json-server](https://github.com/typicode/json-server) as a sort of way to simulate how our frontend may communicate with a simple backend.
+    - ex 2.12-2.15 are exercises that implement functionality for our frontend to alter data in the backend (the json-server).
+    - ex 2.16-2.17 are exercises that implement some css to application.
+  - Live View:
+    - This React App can be seen [here](https://chh02.github.io/FullStack-phonebook/) (https://chh02.github.io/FullStack-phonebook/)
+
+- Ex 2.20
+  - Description:
+    - ex 2.18-2.20 are exercises that create a countries app using all we learned from ex 2.1-2.17 that relies on an api (here I used the openweather api) to display the weather of a country specified by the user.
+  - Live View:
+    - This React App can be seen [here](https://chh02.github.io/FullStack-countries/) (https://chh02.github.io/FullStack-countries/)
+
+## My Apps (Progression)
 
 ### Apps 2.1-2.5
+
 #### Ex 2.1
 - modified Ex 1.5 app with a modularized course component section, e.g., a course component outside of the app component for dispalying course information.  
 <br>![PNG of CHH02's Exercise 2.1 submission](./public/Ex2-1_Screenshot.png)
@@ -36,6 +55,7 @@ const Total = (props) => {
 #### Ex 2.4
 - modified Ex 2.3 app to support displaying information for multiple courses.  
 <br>![PNG of CHH02's Exercise 2.4 submission](./public/Ex2-4_Screenshot.png)
+
 ```JSX
 // App component for displaying FullStackOpen's course information
 const App = () => {
@@ -73,6 +93,7 @@ const App = () => {
 ### Apps 2.6-2.10
 #### Ex 2.6
 - Created a simple phonebook. This exercise focuses on implementing the use of an HTML form into a phonebook react application. Below is my code for my "App.jsx" component which showcases how I implented this html form into the phonebook application. Please also see [Fullstack Part 2 Ex 2.6](https://fullstackopen.com/en/part2/forms#:~:text=2.6%3A%20The%20Phonebook%20Step%201) for more info.
+
 ```JSX
 import { useState } from 'react'
 
@@ -133,6 +154,7 @@ Specifically the ternary operator is used to check whether there is already "[so
 
 #### Ex 2.8
 - Modified 2.7's phonebook accordingly below:
+
 ```JSX
   ...
   const [newNumber, setNewNumber] = useState('') // new state variable to track a person's number

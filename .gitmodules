@@ -1,0 +1,9 @@
+[submodule "part1/courseinfo"]
+	path = part1/courseinfo
+	url = git@github.com:CHH02/FullStack-courseinfo.git
+[submodule "part1/unicafe"]
+	path = part1/unicafe
+	url = git@github.com:CHH02/FullStack-unicafe.git
+[submodule "part1/anecdotes"]
+	path = part1/anecdotes
+	url = git@github.com:CHH02/FullStack-anecdotes.git

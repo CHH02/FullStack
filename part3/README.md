@@ -191,3 +191,53 @@ export default { getAll, create, remove, update }
 ...
 app.use(express.static('dist'))
 ```
+
+### Apps 3.12
+#### Ex 3.12
+- Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
+
+```js 
+### mongo.js ###
+
+const mongoose = require('mongoose')
+...
+mongoose.set('strictQuery',false)
+mongoose.connect(url, { family: 4 })
+
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
+})
+
+const Person = mongoose.model('Person', personSchema)
+
+// add person to phonebook database if given the data to add
+if (name && number) {
+    
+    const person = new Person({
+      name: name,
+      number: number,
+    })
+    
+    person.save().then(result => {
+      console.log(`added ${person.name} number ${person.number} to phonebook`)
+      mongoose.connection.close()
+    }).catch(err => { ... })
+}
+// else if no data is given then just return all database entries so far 
+else if (!name && !number) {
+    Person.find({}).then(result => {
+        console.log('phonebook:');
+        result.forEach(person => {
+          console.log(`${person.name} ${person.number}`)
+        })
+        mongoose.connection.close()
+      }).catch(err => { ... })
+}
+// otherwise something must have gone wrong so go ahead and close connection to DB
+else {
+    mongoose.connection.close()
+    console.log("Incomplete set of data, give a name and a number. Terminating connection... ");
+    process.exit(1)   
+}
+```

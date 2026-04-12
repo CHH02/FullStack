@@ -192,7 +192,7 @@ export default { getAll, create, remove, update }
 app.use(express.static('dist'))
 ```
 
-### Apps 3.12-3.16
+### Apps 3.12-3.17
 #### Ex 3.12
 - Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
 
@@ -485,3 +485,43 @@ app.use(errorHandler)
 ... // rest of file
 
 ```
+
+#### Ex 3.17
+- If the user tries to create a new phonebook entry for a person whose name is already in the phonebook, the frontend will try to update the phone number of the existing entry by making an HTTP PUT request to the entry's unique URL. Modify the backend to support this request. Verify that the frontend works after making your changes.
+
+```JS
+### index.js ###
+
+// modify Ex 3.16's index.js file to use our database
+
+... // beginning of file
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const { name, number } = request.body
+  
+    Person.findById(request.params.id)
+      .then(person => {
+        if (!person) {
+          return response.status(404).end()
+        }
+  
+        person.name = name
+        person.number = number
+  
+        return person.save().then((updatedPerson) => {
+          response.json(updatedPerson)
+        })
+      })
+      .catch(error => next(error))
+})
+
+... // rest of file
+
+```
+
+- Here are some screenshots from the browser and terminal to verify that the frontend works with these changes:
+<br>![First PNG of CHH02's Ex 3.17 frontend functioning correctly on browser](./public/Ex3-17_Screenshot-1.png)
+<br>
+<br>![Second PNG of CHH02's Ex 3.17 frontend functioning correctly on browser](./public/Ex3-17_Screenshot-2.png)
+<br>
+<br>![PNG of CHH02's Ex 3.17 logging requests to the console](./public/Ex3-17_Screenshot-3.png)

@@ -49,7 +49,7 @@ const App = () => {
             })
             .catch(error => {
               setTypeOfMessage('error')
-              setMessage(`Information of ${nameObject.name} has already been removed from server`)
+              setMessage(error.response.data.error)
               setTimeout(() => {
                 setMessage(null)
               }, 5000);
@@ -74,7 +74,7 @@ const App = () => {
         })
         .catch(error => {
           setTypeOfMessage('error')
-          setMessage(`Information of ${person.name} has already been removed from server`)
+          setMessage(error.response.data.error)
           setTimeout(() => {
             setMessage(null)
           }, 5000);

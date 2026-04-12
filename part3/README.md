@@ -192,7 +192,7 @@ export default { getAll, create, remove, update }
 app.use(express.static('dist'))
 ```
 
-### Apps 3.12-3.18
+### Apps 3.12-3.19
 #### Ex 3.12
 - Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
 
@@ -567,3 +567,71 @@ app.get('/api/persons/:id', (request, response, next) => {
 <br>![First PNG of CHH02's Ex 3.18 frontend functioning correctly on browser](./public/Ex3-18_Screenshot-1.png)
 <br>
 <br>![Second PNG of CHH02's Ex 3.18 frontend functioning correctly on browser](./public/Ex3-18_Screenshot-2.png)
+
+#### Ex 3.19
+- Expand the validation so that the name stored in the database has to be at least three characters long. Expand the frontend so that it displays some form of error message when a validation error occurs.
+
+Backend changes:
+```JS
+### person.js ###
+
+... // beginning of file
+
+const personSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    minLength: 3  // added built-in Mongoose minLength validation
+  },
+  number: String,
+})
+
+... // end of file
+
+```
+
+```JS
+### index.js ###
+
+... // beginning of file
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
+    }
+    // added the following code to handle validation errors 
+    else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
+    }
+
+    next(error)
+}
+
+... // end of file
+
+```
+
+Frontend changes:
+```JS
+### App.jsx ###
+
+... // beginning of file
+
+const addPerson = (event) => {
+  ...
+  personService
+    .create(nameObject)
+    .then(returnedPerson => {...})
+    .catch(error => {
+      setTypeOfMessage('error')
+      setMessage(error.response.data.error) // modified to display recieved (validation) error message
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000);
+    })
+}
+
+... // rest of file
+
+```

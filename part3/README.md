@@ -192,7 +192,7 @@ export default { getAll, create, remove, update }
 app.use(express.static('dist'))
 ```
 
-### Apps 3.12-3.17
+### Apps 3.12-3.18
 #### Ex 3.12
 - Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
 
@@ -525,3 +525,45 @@ app.put('/api/persons/:id', (request, response, next) => {
 <br>![Second PNG of CHH02's Ex 3.17 frontend functioning correctly on browser](./public/Ex3-17_Screenshot-2.png)
 <br>
 <br>![PNG of CHH02's Ex 3.17 logging requests to the console](./public/Ex3-17_Screenshot-3.png)
+
+#### Ex 3.18
+- Update the handling of the HTTP GET api/persons/:id and info routes to use the database, and verify that they work directly with the browser, Postman, or VS Code REST client.
+
+```JS
+### index.js ###
+
+// modify Ex 3.17's index.js file to use our database
+
+... // beginning of file
+
+app.get('/info', (request, response) => {
+    Person.find({}).then((perons) => {
+        response.send(`
+                <p>Phonebook has info for ${persons.length} ${(persons.length === 1) ? 'person' : 'people'}</p>
+                <p>${Date(Date.now()).toString()}</p>
+        `)
+    })
+})
+
+app.get('/api/persons/:id', (request, response, next) => {
+    const id = request.params.id
+  
+    Person.findById(id)
+        .then((person) => {
+            response.json(person)
+        })
+        .catch((error) => {
+            next(error)
+            console.log('error finding person by ID:', error.message);
+            response.status(404).end()
+        })
+})
+
+... // rest of file
+
+```
+
+- Here are some screenshots from the browser and terminal to verify that the frontend works with these changes:
+<br>![First PNG of CHH02's Ex 3.18 frontend functioning correctly on browser](./public/Ex3-18_Screenshot-1.png)
+<br>
+<br>![Second PNG of CHH02's Ex 3.18 frontend functioning correctly on browser](./public/Ex3-18_Screenshot-2.png)

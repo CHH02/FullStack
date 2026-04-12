@@ -192,7 +192,7 @@ export default { getAll, create, remove, update }
 app.use(express.static('dist'))
 ```
 
-### Apps 3.12-3.14
+### Apps 3.12-3.15
 #### Ex 3.12
 - Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
 
@@ -394,3 +394,34 @@ app.post('/api/persons', (request, response) => {
 <br>![Second PNG of CHH02's Ex 3.14 frontend functioning correctly on browser](./public/Ex3-14_Screenshot-2.png)
 <br>
 <br>![PNG of CHH02's Ex 3.14 logging requests to the console](./public/Ex3-14_Screenshot-3.png)
+
+#### Ex 3.15
+- Change the backend so that deleting phonebook entries is reflected in the database. Verify that the frontend still works after making the changes.
+
+```JS
+### index.js ###
+
+// modify Ex 3.14's index.js file to use our database
+
+... // beginning of file
+
+app.delete('/api/persons/:id', (request, response) => {
+    // modified this function to use our database's person model to delete a person from the database
+    const id = request.params.id
+    Person.findByIdAndDelete(id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))  
+})
+
+... // rest of file
+
+```
+
+- Here are some screenshots from the browser and terminal to verify that the frontend works with these changes:
+<br>![First PNG of CHH02's Ex 3.15 frontend functioning correctly on browser](./public/Ex3-15_Screenshot-1.png)
+<br>
+<br>![Second PNG of CHH02's Ex 3.15 frontend functioning correctly on browser](./public/Ex3-15_Screenshot-2.png)
+<br>
+<br>![PNG of CHH02's Ex 3.15 logging requests to the console](./public/Ex3-15_Screenshot-3.png)

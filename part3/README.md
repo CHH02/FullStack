@@ -192,7 +192,7 @@ export default { getAll, create, remove, update }
 app.use(express.static('dist'))
 ```
 
-### Apps 3.12-3.13
+### Apps 3.12-3.14
 #### Ex 3.12
 - Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
 
@@ -265,7 +265,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 let persons = []  // replaced hardcoded data with empty []
 
 app.get('/api/persons', (request, response) => {
-  // modified this function to use our database's person model to fetch persons data
+    // modified this function to use our database's person model to fetch persons data
     Person.find({}).then((persons) => {
         response.json(persons)
     })
@@ -327,3 +327,70 @@ module.exports = mongoose.model('Person', personSchema)
 <br>![PNG of CHH02's Ex 3.13 frontend functioning correctly on browser](./public/Ex3-13_Screenshot-1.png)
 <br>
 <br>![PNG of CHH02's Ex 3.13 logging requests to the console](./public/Ex3-13_Screenshot-2.png)
+
+#### Ex 3.14
+- Change the backend so that new numbers are saved to the database. Verify that the frontend still works after the changes. At this stage, we're ignoring whether there is already a person in the database with the same name as the person being added.
+
+```JS
+### index.js ###
+
+// modify Ex 3.13's index.js file to use our database
+
+... // beginning of file
+
+app.get('/api/persons/:id', (request, response) => {
+    // modified this function to use our database's person model to fetch a person from the database
+
+    const id = request.params.id
+  
+    Person.findById(id)
+        .then((person) => {
+            response.json(person)
+        })
+        .catch((error) => {
+            console.log('error finding person by ID:', error.message);
+            response.status(404).end()
+        })
+})
+
+app.delete('/api/persons/:id', (request, response) => {...})
+  
+app.post('/api/persons', (request, response) => {
+    // modified this function to use our database's person model to save person data to database
+
+    const body = request.body
+  
+    if (!body.name) {
+        return response.status(400).json({ 
+            error: 'name missing' 
+        })
+    } else if (!body.number) {
+        return response.status(400).json({
+            error: 'number missing'
+        })
+    } else if (persons.some(n => n.name === body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    }
+  
+    const person = new Person({
+      name: body.name,
+      number: body.number
+    })
+    
+    person.save().then((savedPerson) => {
+        response.json(savedPerson)
+    })
+})
+
+... // rest of file
+
+```
+
+- Here are some screenshots from the browser and terminal to verify that the frontend works with these changes:
+<br>![First PNG of CHH02's Ex 3.14 frontend functioning correctly on browser](./public/Ex3-14_Screenshot-1.png)
+<br>
+<br>![Second PNG of CHH02's Ex 3.14 frontend functioning correctly on browser](./public/Ex3-14_Screenshot-2.png)
+<br>
+<br>![PNG of CHH02's Ex 3.14 logging requests to the console](./public/Ex3-14_Screenshot-3.png)

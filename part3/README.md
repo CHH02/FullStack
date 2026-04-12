@@ -192,7 +192,7 @@ export default { getAll, create, remove, update }
 app.use(express.static('dist'))
 ```
 
-### Apps 3.12-3.15
+### Apps 3.12-3.16
 #### Ex 3.12
 - Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
 
@@ -425,3 +425,63 @@ app.delete('/api/persons/:id', (request, response) => {
 <br>![Second PNG of CHH02's Ex 3.15 frontend functioning correctly on browser](./public/Ex3-15_Screenshot-2.png)
 <br>
 <br>![PNG of CHH02's Ex 3.15 logging requests to the console](./public/Ex3-15_Screenshot-3.png)
+
+#### Ex 3.16
+- Move the error handling of the application to a new error handler middleware.
+
+```JS
+### index.js ###
+
+// modify Ex 3.15's index.js file to use our new error handler middleware
+
+... // beginning of file
+
+Person.find({}).then(result => persons = result)
+
+app.get('/api/persons', (request, response) => {...})
+
+app.get('/info', (request, response) => {...})
+
+// use next function to pass error to error handler middleware
+app.get('/api/persons/:id', (request, response, next) => {
+    const id = request.params.id
+  
+    Person.findById(id)
+        .then((person) => {
+            response.json(person)
+        })
+        .catch((error) => {
+            error.status(404)
+            next(error)
+            console.log('error finding person by ID:', error.message);
+        })
+})
+
+// use next function to pass error to error handler middleware
+app.delete('/api/persons/:id', (request, response, next) => {...})
+  
+app.post('/api/persons', (request, response) => {...})
+
+// here define and use unknown endpoint handler middleware
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+  
+app.use(unknownEndpoint)
+
+// here define and use error handler middleware
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
+    } 
+  
+    next(error)
+}
+
+app.use(errorHandler)
+
+... // rest of file
+
+```

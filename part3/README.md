@@ -192,7 +192,7 @@ export default { getAll, create, remove, update }
 app.use(express.static('dist'))
 ```
 
-### Apps 3.12
+### Apps 3.12-3.13
 #### Ex 3.12
 - Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
 
@@ -241,3 +241,89 @@ else {
     process.exit(1)   
 }
 ```
+
+#### Ex 3.13
+- Change the fetching of all phonebook entries so that the data is fetched from the database. Verify that the frontend works after the changes have been made. Write all Mongoose-specific code into its own module.
+
+```JS
+### index.js ###
+
+// modify Ex 3.11's index.js file to use our database
+
+require('dotenv').config()  // added this line to access environment variables
+const express = require('express')
+const morgan = require('morgan')
+const Person = require('./models/person') // added this line to import our person model
+
+const app = express()
+morgan.token('body', request => JSON.stringify(request.body))
+
+app.use(express.static('dist'))
+app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+let persons = []  // replaced hardcoded data with empty []
+
+app.get('/api/persons', (request, response) => {
+  // modified this function to use our database's person model to fetch persons data
+    Person.find({}).then((persons) => {
+        response.json(persons)
+    })
+})
+
+app.get('/info', (request, response) => {...})
+
+app.get('/api/persons/:id', (request, response) => {...})
+
+app.delete('/api/persons/:id', (request, response) => {...})
+  
+app.post('/api/persons', (request, response) => {...})
+
+const PORT = process.env.PORT // removed "|| 3001" as we use an environment variable instead
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
+```
+
+```JS
+### perons.js ###
+
+// create a person.js file to model our data for the database
+
+const mongoose = require('mongoose')
+
+mongoose.set('strictQuery', false)
+
+const url = process.env.MONGODB_URI
+
+console.log('connecting to', url)
+mongoose.connect(url, { family: 4 })
+
+  .then(result => {
+    console.log('connected to MongoDB')
+  })
+  .catch(error => {
+    console.log('error connecting to MongoDB:', error.message)
+  })
+
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
+})
+
+personSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
+
+module.exports = mongoose.model('Person', personSchema)
+```
+
+- Here are some screenshots from the browser and terminal to verify that the frontend works with these changes:
+<br>![PNG of CHH02's Ex 3.13 frontend functioning correctly on browser](./public/Ex3-13_Screenshot-1.png)
+<br>
+<br>![PNG of CHH02's Ex 3.13 logging requests to the console](./public/Ex3-13_Screenshot-2.png)

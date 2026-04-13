@@ -192,7 +192,7 @@ export default { getAll, create, remove, update }
 app.use(express.static('dist'))
 ```
 
-### Apps 3.12-3.20
+### Apps 3.12-3.21
 #### Ex 3.12
 - Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
 
@@ -671,3 +671,7 @@ const personSchema = new mongoose.Schema({
 ... // end of file
 
 ```
+
+#### Ex 3.21
+- enerate a new "full stack" version of the application by creating a new production build of the frontend, and copying it to the backend directory. Push the latest version to Fly.io/Render and verify that everything works there as well.
+- Note: I used render to do it, here is the [link](https://fullstack-phonebook-database.onrender.com)

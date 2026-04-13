@@ -192,7 +192,7 @@ export default { getAll, create, remove, update }
 app.use(express.static('dist'))
 ```
 
-### Apps 3.12-3.21
+### Apps 3.12-3.22
 #### Ex 3.12
 - Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
 
@@ -675,3 +675,54 @@ const personSchema = new mongoose.Schema({
 #### Ex 3.21
 - enerate a new "full stack" version of the application by creating a new production build of the frontend, and copying it to the backend directory. Push the latest version to Fly.io/Render and verify that everything works there as well.
 - Note: I used render to do it, here is the [link](https://fullstack-phonebook-database.onrender.com)
+
+#### Ex 3.22
+- Add ESlint to your application and fix all the warnings.
+
+ran the following cli commands to install and setup ESLint:
+
+```
+npm install eslint @eslint/js --save-dev
+npx eslint --init
+npm install --save-dev @stylistic/eslint-plugin
+```
+
+created the following file before running ESLint and fixing the errors:
+
+```JS
+### esling.config.mjs ###
+
+import globals from "globals";
+import { defineConfig } from "eslint/config";
+import js from '@eslint/js'
+import stylisticJs from '@stylistic/eslint-plugin'
+
+export default defineConfig([
+  js.configs.recommended,
+  {
+    files: ["**/*.js"],
+    languageOptions: {
+      sourceType: "commonjs",
+      globals: { ...globals.node },
+      ecmaVersion: 'latest',
+    },
+    plugins: { 
+      '@stylistic/js': stylisticJs,
+    },
+    rules: { 
+      '@stylistic/js/indent': ['error', 2],
+      '@stylistic/js/linebreak-style': ['error', 'unix'],
+      '@stylistic/js/quotes': ['error', 'single'],
+      '@stylistic/js/semi': ['error', 'never'],
+      eqeqeq: 'error',
+      'no-trailing-spaces': 'error',
+      'object-curly-spacing': ['error', 'always'],
+      'arrow-spacing': ['error', { before: true, after: true }],
+      'no-console': 'off',
+    },
+  },
+  {
+    ignores: ['dist/**'],
+  },
+]);
+```

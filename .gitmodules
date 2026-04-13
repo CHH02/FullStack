@@ -19,3 +19,6 @@
 [submodule "part3/phonebook-backend"]
 	path = part3/phonebook-backend
 	url = git@github.com:CHH02/FullStack-phonebook-backend.git
+[submodule "part3/phonebook-database"]
+	path = part3/phonebook-database
+	url = git@github.com:CHH02/FullStack-phonebook-backend.git

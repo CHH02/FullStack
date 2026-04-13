@@ -192,7 +192,7 @@ export default { getAll, create, remove, update }
 app.use(express.static('dist'))
 ```
 
-### Apps 3.12-3.19
+### Apps 3.12-3.20
 #### Ex 3.12
 - Create a cloud-based MongoDB database for the phonebook application with MongoDB Atlas. Create a mongo.js file in the project directory, that can be used for adding entries to the phonebook, and for listing all of the existing entries in the phonebook.
 
@@ -633,5 +633,41 @@ const addPerson = (event) => {
 }
 
 ... // rest of file
+
+```
+
+#### Ex 3.20
+- Add validation to your phonebook application, which will make sure that phone numbers are of the correct form. A phone number must:
+  - have length of 8 or more
+  - be formed of two parts that are separated by -, the first part has two or three numbers and the second part also consists of numbers
+    - eg. 09-1234556 and 040-22334455 are valid phone numbers
+    - eg. 1234556, 1-22334455 and 10-22-334455 are invalid
+
+- Use a Custom validator to implement the second part of the validation. If an HTTP POST request tries to add a person with an invalid phone number, the server should respond with an appropriate status code and error message.
+
+```JS
+### person.js ###
+
+... // beginning of file
+
+const personSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    minLength: 3
+  },
+  number: {
+    type: String,
+    minLength: 8, // Mongoose build-in validator to ensure 8 or longer
+    // custom validator to ensure validly formatted phone numbers
+    validate: {
+      validator: numberToBeValidated => {
+        return /^\d{2,3}-\d+$/.test(numberToBeValidated)
+      },
+      message: props => `${props.value} is not a valid phone number. Should be 2-3 numbers followed by a dash and 1 or more numbers (e.g., 09-1234556 and 040-22334455 are valid)`
+    }
+  },
+})
+
+... // end of file
 
 ```

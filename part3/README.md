@@ -9,6 +9,14 @@ This is for the submission of exercises 3.1-3.22 of the Full OpenStack course. S
     - ex 3.9-3.11 are exercises that connect ex 2.17's phonebook application to this phonebook backend and to then deploy it to the internet. Here we use render to deploy our backend web service that also servers the phonebook frontend's production build statically.
   - Live View:
     - This React App can be seen [here](https://render-test-ushk.onrender.com) (https://render-test-ushk.onrender.com)
+- Ex 3.22
+  - Description:
+    - ex 3.12 is an exercise for creating a backend api server that connects and a MongoDB Atlas database that interact with eachother from the command line.
+    - ex 3.13-3.18 are exercises for integrating our MongoDB Atlas database from ex 3.12 into our backend api server from ex 3.11.
+    - ex 3.19-3.21 are exercises for implementing validation on what gets sent to our MongoDB Atlas database and then deploying our application so far to the internet
+    - ex 3.22 is an exercise for installing and using ESLint in our application from ex 3.21 to check for syntax and other errors in our javascript code.
+  - Live View:
+    - This React App can be seen [here](https://fullstack-phonebook-database.onrender.com) (https://fullstack-phonebook-database.onrender.com)
 
 ## My Apps
 

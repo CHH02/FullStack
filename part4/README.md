@@ -1,13 +1,14 @@
-# FullStack-Part3
+# FullStack-Part4
 This is for the submission of exercises 4.1-4.23 of the FullStack Open's course. See Full Stack open part 4 [here](https://fullstackopen.com/en/part4)
 
 ## Objective
-- Ex 4.2
+- Ex 4.3
   - ex 4.1-4.2 are exercises to start a backend api server to save blogs to a MongoDB Atlas database and practice project structure best practacies.
+  - ex 4.3-7 are exercises to introduce writing helper functions and unit tests for those functions to the blog list app from ex 4.2.
 
 ## My Apps
 
-### Apps 4.1-4.2
+### Apps 4.1-4.3
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -36,3 +37,22 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 ├── package-lock.json
 ├── package.json
 ```
+
+#### Ex 4.3
+- Defined a dummy function that receives an array of blog posts as a parameter and always returns the value 1. Then, Verified that your test configuration works with the following test:
+
+```JS
+const { test, describe } = require('node:test')
+const assert = require('node:assert')
+const listHelper = require('../utils/list_helper')
+
+test('dummy returns one', () => {
+  const blogs = []
+
+  const result = listHelper.dummy(blogs)
+  assert.strictEqual(result, 1)
+})
+```
+- Here is a screenshot from the terminal to verify that the helper function passed the unit test:
+<br>![PNG of CHH02's Ex 4.3 passing unit tests as seen from terminal output](./public/Ex4-3_Screenshot.png)
+<br>

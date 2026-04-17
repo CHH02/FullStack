@@ -8,7 +8,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.4
+### Apps 4.1-4.5
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -112,3 +112,48 @@ describe('total likes', () => {
 })
 ```
 note: blogs testing input list can be found [here](https://github.com/fullstack-hy2020/misc/blob/master/blogs_for_test.md).
+
+#### Ex 4.5
+- Defined a new favoriteBlog function that receives a list of blogs as a parameter. The function returns the blog with the most likes. If there are multiple favorites, it returns the first one of them. Wrote the tests for this exercise inside of a new describe block.
+
+```JS
+### list_helper.js ###
+
+... // beginning of file
+
+const favoriteBlog = (blogs) => {
+  return blogs.reduce((lastItem, currentItem) => (lastItem.likes > currentItem.likes)
+  ? lastItem : currentItem, {})
+}
+
+... // rest of file
+```
+
+```JS
+### favoriteBlog.test.js ###
+
+const { test, describe } = require('node:test')
+const assert = require('node:assert')
+const listHelper = require('../utils/list_helper')
+
+describe('favorite blog', () => {
+  const listWithOneBlog = [...]
+
+  const blogs = [...]
+
+  test('when list has only one blog', () => {
+    const result = listHelper.favoriteBlog(listWithOneBlog)
+    assert.deepStrictEqual(result, listWithOneBlog[0])
+  })
+
+  test('when list has many blogs', () => {
+    const result = listHelper.favoriteBlog(blogs)
+    assert.deepStrictEqual(result, blogs[2])
+  })
+
+  test('when list has no blogs', () => {
+    const result = listHelper.favoriteBlog([])
+    assert.deepStrictEqual(result, {})
+  })
+})
+```

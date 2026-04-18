@@ -6,6 +6,7 @@ const app = require('../app')
 
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
+const { title } = require('node:process')
 
 const api = supertest(app)
 
@@ -83,6 +84,30 @@ describe('when there is initially some blogs saved', () => {
       const blogsAtEnd = await helper.blogsInDb()
 
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+  })
+
+  describe('verifying that the likes property defaults to zero', () => {
+    test('new blog defaulted to zero', async () => {
+      const newBlog = {
+        title: "Test Title",
+        author: "Test the Author",
+        url: "https://test.com/",
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+      const result = blogsAtEnd.find(e => {
+        return (e.title === 'Test Title' && e.author === 'Test the Author' && e.url === 'https://test.com/' && e.likes === 0)
+      })
+      assert.strictEqual(result.likes, 0)
     })
   })
 })

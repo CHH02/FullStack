@@ -9,7 +9,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.10
+### Apps 4.1-4.11
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -510,4 +510,82 @@ blogsRouter.post('/', async (request, response, next) => {
 })
 
 module.exports = blogsRouter
+```
+
+#### Ex 4.11
+- Wrote a test that verified that if the likes property is missing from the request, it will default to the value 0. Made the required changes to the code so that it passed the test.
+
+```JS
+### blog_api.test.js ###
+
+// created this file to write api-level integration tests for Fullstack Open's course exercises
+
+... // beginning setup of file
+
+describe('when there is initially some blogs saved', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+  })
+
+  ... // previous tests
+
+  // code to verify that the likes property defaults to zero
+  describe('verifying that the likes property defaults to zero', () => {
+    test('new blog defaulted to zero', async () => {
+      const newBlog = {
+        title: "Test Title",
+        author: "Test the Author",
+        url: "https://test.com/",
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+      const result = blogsAtEnd.find(e => {
+        return (e.title === 'Test Title' && e.author === 'Test the Author' && e.url === 'https://test.com/' && e.likes === 0)
+      })
+      assert.strictEqual(result.likes, 0)
+    })
+  })
+})
+
+after(async () => {
+  await mongoose.connection.close()
+})
+```
+
+```JS
+### blog.js ###
+
+... // beginning of model file
+
+// changed the blog schema's likes property to default to zero
+const blogSchema = mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  author: {
+    type: String,
+    required: true
+  },
+  url: {
+    type: String,
+    required: true
+  },
+  likes: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+})
+
+... // rest of model file
 ```

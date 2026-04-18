@@ -33,9 +33,30 @@ const mostBlogs = (blogs) => {
   }
 }
 
+const mostLikes = (blogs) => {
+  if (blogs.length === 0)
+    return {}
+  
+  const freq = {}
+
+  for (const item of blogs) {
+    freq[item.author] = (freq[item.author] || 0) + item.likes
+  }
+
+  result = Object.entries(freq).reduce((lastItem, currentItem) => {
+    return currentItem[1] > lastItem[1] ? currentItem : lastItem
+  })
+
+  return {
+    author: result[0],
+    likes: result[1]
+  }
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }

@@ -8,7 +8,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.6
+### Apps 4.1-4.7
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -223,6 +223,76 @@ describe('most blogs', () => {
 
   test('when list has no blogs', () => {
     const result = listHelper.mostBlogs([])
+    assert.deepStrictEqual(result, {})
+  })
+})
+```
+
+#### Ex 4.7
+- Defined a function called mostLikes that receives an array of blogs as its parameter. The function returns the author whose blog posts have the largest amount of likes. The return value also contains the total number of likes that the author has received. If there are many top bloggers, then it is enough to show any one of them.
+
+```JS
+### list_helper.js ###
+
+... // beginning of file
+
+const mostLikes = (blogs) => {
+  if (blogs.length === 0)
+    return {}
+  
+  const freq = {}
+
+  for (const item of blogs) {
+    freq[item.author] = (freq[item.author] || 0) + item.likes
+  }
+
+  result = Object.entries(freq).reduce((lastItem, currentItem) => {
+    return currentItem[1] > lastItem[1] ? currentItem : lastItem
+  })
+
+  return {
+    author: result[0],
+    likes: result[1]
+  }
+}
+
+... // rest of file
+```
+
+```JS
+### mostBlogs.test.js ###
+
+const { test, describe } = require('node:test')
+const assert = require('node:assert')
+const listHelper = require('../utils/list_helper')
+
+describe('most likes', () => {
+  const listWithOneBlog = [...]
+
+  const blogs = [...]
+
+  test('when list has only one blog', () => {
+    const result = listHelper.mostLikes(listWithOneBlog)
+    assert.deepStrictEqual(result,
+      {
+        author: "Edsger W. Dijkstra",
+        likes: 5
+      }
+    )
+  })
+
+  test('when list has many blogs', () => {
+    const result = listHelper.mostLikes(blogs)
+    assert.deepStrictEqual(result, 
+      {
+        author: "Edsger W. Dijkstra",
+        likes: 17
+      }
+    )
+  })
+
+  test('when list has no blogs', () => {
+    const result = listHelper.mostLikes([])
     assert.deepStrictEqual(result, {})
   })
 })

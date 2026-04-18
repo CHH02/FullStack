@@ -8,7 +8,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.5
+### Apps 4.1-4.6
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -153,6 +153,76 @@ describe('favorite blog', () => {
 
   test('when list has no blogs', () => {
     const result = listHelper.favoriteBlog([])
+    assert.deepStrictEqual(result, {})
+  })
+})
+```
+
+#### Ex 4.6
+- Defined a function called mostBlogs that receives an array of blogs as a parameter. The function returns the author who has the largest amount of blogs. The return value also contains the number of blogs the top author has. If there are many top bloggers, then it is enough to return any one of them.
+
+```JS
+### list_helper.js ###
+
+... // beginning of file
+
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0)
+    return {}
+  
+  const freq = {}
+
+  for (const item of blogs) {
+    freq[item.author] = (freq[item.author] || 0) + 1
+  }
+
+  result = Object.entries(freq).reduce((lastItem, currentItem) => {
+    return currentItem[1] > lastItem[1] ? currentItem : lastItem
+  })
+
+  return {
+    author: result[0],
+    blogs: result[1]
+  }
+}
+
+... // rest of file
+```
+
+```JS
+### mostBlogs.test.js ###
+
+const { test, describe } = require('node:test')
+const assert = require('node:assert')
+const listHelper = require('../utils/list_helper')
+
+describe('most blogs', () => {
+  const listWithOneBlog = [...]
+
+  const blogs = [...]
+
+  test('when list has only one blog', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    assert.deepStrictEqual(result,
+      {
+        author: "Edsger W. Dijkstra",
+        blogs: 1
+      }
+    )
+  })
+
+  test('when list has many blogs', () => {
+    const result = listHelper.mostBlogs(blogs)
+    assert.deepStrictEqual(result, 
+      {
+        author: "Robert C. Martin",
+        blogs: 3
+      }
+    )
+  })
+
+  test('when list has no blogs', () => {
+    const result = listHelper.mostBlogs([])
     assert.deepStrictEqual(result, {})
   })
 })

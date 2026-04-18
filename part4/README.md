@@ -9,7 +9,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.8
+### Apps 4.1-4.9
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -392,4 +392,43 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 ... // rest of file
+```
+
+#### Ex 4.9
+- Wrote a test that verifies that the unique identifier property of the blog posts is named id, by default the database names the property _id.
+
+```JS
+### blog_api.test.js ###
+
+... // beginning setup of file
+
+describe('when there is initially some blogs saved', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+  })
+
+  ... // previous code for testing GET requests
+
+  // new code to verify that the unique identifier is named id
+  describe('verifying that the unique identifier is named id', () => {
+    test('all blogs have an id property', async () => {
+      const response = await api.get('/api/blogs')
+
+      const isIdProperty = response.body.every(e => e.hasOwnProperty('id'))
+      assert.strictEqual(isIdProperty, true)
+    })
+
+    test('no blogs have _id property', async () => {
+      const response = await api.get('/api/blogs')
+
+      const is_idProperty = response.body.some(e => '_id' in e)
+      assert.strictEqual(is_idProperty, false)
+    })
+  })
+})
+
+after(async () => {
+  await mongoose.connection.close()
+})
 ```

@@ -36,6 +36,22 @@ describe('when there is initially some blogs saved', () => {
       assert(titles.includes('React patterns'))
     })
   })
+
+  describe('verifying that the unique identifier is named id', () => {
+    test('all blogs have an id property', async () => {
+      const response = await api.get('/api/blogs')
+
+      const isIdProperty = response.body.every(e => e.hasOwnProperty('id'))
+      assert.strictEqual(isIdProperty, true)
+    })
+
+    test('no blogs have _id property', async () => {
+      const response = await api.get('/api/blogs')
+
+      const is_idProperty = response.body.some(e => '_id' in e)
+      assert.strictEqual(is_idProperty, false)
+    })
+  })
 })
 
 after(async () => {

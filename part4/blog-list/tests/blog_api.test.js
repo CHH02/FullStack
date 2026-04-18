@@ -52,6 +52,39 @@ describe('when there is initially some blogs saved', () => {
       assert.strictEqual(is_idProperty, false)
     })
   })
+
+  describe('testing post requests', () => {
+    test('succeeds with valid data', async () => {
+      const newBlog = {
+        title: "Test Title",
+        author: "Test the Author",
+        url: "https://test.com/",
+        likes: 0
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+      const titles = blogsAtEnd.map(e => e.title)
+      assert(titles.includes('Test Title'))
+    })
+
+    test('fails with status code 400 if data invalid', async () => {
+      const newBlog = { likes: 10 }
+
+      await api.post('/api/blogs').send(newBlog).expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+  })
 })
 
 after(async () => {

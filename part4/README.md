@@ -9,7 +9,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.9
+### Apps 4.1-4.10
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -431,4 +431,83 @@ describe('when there is initially some blogs saved', () => {
 after(async () => {
   await mongoose.connection.close()
 })
+```
+
+#### Ex 4.10
+- Wrote a test that verifies that making an HTTP POST request to the /api/blogs URL successfully creates a new blog post. Verified that the total number of blogs in the system is increased by one. Once the test is finished, refactored the operation to use async/await instead of promises.
+
+```JS
+### blog_api.test.js ###
+
+// created this file to write api-level integration tests for Fullstack Open's course exercises
+
+... // beginning setup of file
+
+describe('when there is initially some blogs saved', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+  })
+
+  ... // previous tests
+
+  // code to test post requests
+  describe('testing post requests', () => {
+    test('succeeds with valid data', async () => {
+      const newBlog = {
+        title: "Test Title",
+        author: "Test the Author",
+        url: "https://test.com/",
+        likes: 0
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+      const titles = blogsAtEnd.map(e => e.title)
+      assert(titles.includes('Test Title'))
+    })
+
+    test('fails with status code 400 if data invalid', async () => {
+      const newBlog = { likes: 10 }
+
+      await api.post('/api/blogs').send(newBlog).expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+  })
+})
+
+after(async () => {
+  await mongoose.connection.close()
+})
+```
+
+```JS
+### controllers/blogs.js ###
+
+const blogsRouter = require('express').Router()
+const Blog = require('../models/blog')
+
+... // route handler for get requests
+
+  // refactored route handler for post requests to use async/await instead
+blogsRouter.post('/', async (request, response, next) => {
+  const body = request.body
+
+  const blog = new Blog(body)
+
+  const savedBlog = await blog.save()
+  response.status(201).json(savedBlog)
+})
+
+module.exports = blogsRouter
 ```

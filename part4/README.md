@@ -2,13 +2,14 @@
 This is for the submission of exercises 4.1-4.23 of the FullStack Open's course. See Full Stack open part 4 [here](https://fullstackopen.com/en/part4)
 
 ## Objective
-- Ex 4.3
+- Ex 4.7
   - ex 4.1-4.2 are exercises to start a backend api server to save blogs to a MongoDB Atlas database and practice project structure best practacies.
   - ex 4.3-7 are exercises to introduce writing helper functions and unit tests for those functions to the blog list app from ex 4.2.
+  - ex 4.8-4.12 are exercises to introduce using async/await code instead and to write API-level integration tests for our server application.
 
 ## My Apps
 
-### Apps 4.1-4.7
+### Apps 4.1-4.8
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -61,7 +62,7 @@ test('dummy returns one', () => {
 - Defined a new totalLikes function that receives a list of blog posts as a parameter. The function returns the total sum of likes in all of the blog posts. Wrote appropriate tests for the function.
 
 ```JS
-### list_helper.js ###
+### utils/list_helper.js ###
 
 ... // beginning of file
 
@@ -117,7 +118,7 @@ note: blogs testing input list can be found [here](https://github.com/fullstack-
 - Defined a new favoriteBlog function that receives a list of blogs as a parameter. The function returns the blog with the most likes. If there are multiple favorites, it returns the first one of them. Wrote the tests for this exercise inside of a new describe block.
 
 ```JS
-### list_helper.js ###
+### utils/list_helper.js ###
 
 ... // beginning of file
 
@@ -162,7 +163,7 @@ describe('favorite blog', () => {
 - Defined a function called mostBlogs that receives an array of blogs as a parameter. The function returns the author who has the largest amount of blogs. The return value also contains the number of blogs the top author has. If there are many top bloggers, then it is enough to return any one of them.
 
 ```JS
-### list_helper.js ###
+### utils/list_helper.js ###
 
 ... // beginning of file
 
@@ -232,7 +233,7 @@ describe('most blogs', () => {
 - Defined a function called mostLikes that receives an array of blogs as its parameter. The function returns the author whose blog posts have the largest amount of likes. The return value also contains the total number of likes that the author has received. If there are many top bloggers, then it is enough to show any one of them.
 
 ```JS
-### list_helper.js ###
+### utils/list_helper.js ###
 
 ... // beginning of file
 
@@ -296,4 +297,99 @@ describe('most likes', () => {
     assert.deepStrictEqual(result, {})
   })
 })
+```
+
+#### Ex 4.8
+- Used the [SuperTest](https://github.com/forwardemail/supertest) library for writing a test that makes an HTTP GET request to the /api/blogs URL. Verified that the blog list application returns the correct amount of blog posts in the JSON format. Once the test is finished, refactored the route handler to use the async/await syntax instead of promises.
+
+```JS
+### tests/test_helper.js ###
+
+// created this file for helper functions of commonly used code in the tests
+
+const Blog = require('../models/blog')
+
+const initialBlogs = [...]
+
+const nonExistingId = async () => {
+  const blog = new Blog({ content: 'willremovethissoon' })
+  await blog.save()
+  await blog.deleteOne()
+
+  return blog._id.toString()
+}
+
+const blogsInDb = async () => {
+  const notes = await Blog.find({})
+  return notes.map(blog => blog.toJSON())
+}
+
+module.exports = {
+  initialBlogs, nonExistingId, blogsInDb
+}
+```
+
+```JS
+### blog_api.test.js ###
+
+// created this file to write api-level integration tests for Fullstack Open's course exercises
+
+const assert = require('node:assert')
+const { test, after, beforeEach, describe } = require('node:test')
+const mongoose = require('mongoose')
+const supertest = require('supertest')
+const app = require('../app')
+
+const helper = require('./test_helper')
+const Blog = require('../models/blog')
+
+const api = supertest(app)
+
+describe('when there is initially some blogs saved', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+  })
+
+  describe('testing GET requests', () => {
+    test('blogs are returned as json', async () => {
+      await api
+        .get('/api/blogs')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+    })
+    
+    test('all blogs are returned', async () => {
+      const response = await api.get('/api/blogs')
+    
+      assert.strictEqual(response.body.length, helper.initialBlogs.length)
+    })
+    
+    test('a specific blog is within the returned blogs', async () => {
+      const response = await api.get('/api/blogs')
+    
+      const titles = response.body.map(e => e.title)
+      assert(titles.includes('React patterns'))
+    })
+  })
+})
+
+after(async () => {
+  await mongoose.connection.close()
+})
+```
+
+```JS
+### controllers/blogs.js ###
+
+const blogsRouter = require('express').Router()
+const Blog = require('../models/blog')
+
+// refactored route handler for get requests to use async/await instead
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({})
+  response.json(blogs)
+})
+
+... // rest of file
 ```

@@ -184,6 +184,42 @@ describe('when there is initially some blogs saved', () => {
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
   })
+
+  describe('updating a blog', () => {
+    test('succeeds with status code 200 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const valuesToUpdate = { author: 'Updated Author', likes: 5}
+      const blogToUpdate = { ...blogsAtStart[0], ...valuesToUpdate }
+
+      await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(blogToUpdate)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      const ids = blogsAtEnd.map(n => n.id)
+      assert(ids.includes(blogToUpdate.id))
+
+      assert.deepStrictEqual(blogsAtEnd[0], { ...blogToUpdate, ...valuesToUpdate})
+    })
+
+    test('fails with statuscode 404 if blog does not exist', async () => {
+      const validNonexistingId = await helper.nonExistingId()
+      const blogsAtStart = await helper.blogsInDb()
+      const valuesToUpdate = { author: 'Updated Author', likes: 5}
+      const blogToUpdate = { ...blogsAtStart[0], ...valuesToUpdate }
+
+      await api
+        .put(`/api/blogs/${validNonexistingId}`)
+        .send(blogToUpdate)
+        .expect(404)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.deepStrictEqual(blogsAtEnd[0], blogsAtStart[0])
+    })
+  })
 })
 
 after(async () => {

@@ -10,7 +10,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.13
+### Apps 4.1-4.14
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -727,6 +727,90 @@ describe('when there is initially some blogs saved', () => {
 
       const blogsAtEnd = await helper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+  })
+})
+
+after(async () => {
+  await mongoose.connection.close()
+})
+```
+
+#### Ex 4.14
+- Implemented functionality for updating the information of an individual blog post. Used async/await. Implemented tests to test for the proper functionality.
+
+```JS
+### controllers/blogs.js ###
+
+const blogsRouter = require('express').Router()
+const Blog = require('../models/blog')
+
+... // route handler for get, post, and delete requests
+
+// route handler for put/update requests that use async/await
+blogsRouter.put('/:id', async (request, response) => {
+  const blogToUpdate = await Blog.findById(request.params.id)
+  if (!blogToUpdate) {
+    response.status(404).end()
+  } else {
+    blogToUpdate.set(request.body)
+    const updatedBlog = await blogToUpdate.save()
+    response.json(updatedBlog)
+  }
+})
+
+module.exports = blogsRouter
+```
+
+```JS
+### blog_api.test.js ###
+
+// created this file to write api-level integration tests for Fullstack Open's course exercises
+
+... // beginning setup of file
+
+describe('when there is initially some blogs saved', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+  })
+
+  ... // previous tests
+
+  // code to verify delete request functionality
+  describe('updating a blog', () => {
+    test('succeeds with status code 200 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const valuesToUpdate = { author: 'Updated Author', likes: 5}
+      const blogToUpdate = { ...blogsAtStart[0], ...valuesToUpdate }
+
+      await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(blogToUpdate)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      const ids = blogsAtEnd.map(n => n.id)
+      assert(ids.includes(blogToUpdate.id))
+
+      assert.deepStrictEqual(blogsAtEnd[0], { ...blogToUpdate, ...valuesToUpdate})
+    })
+
+    test('fails with statuscode 404 if blog does not exist', async () => {
+      const validNonexistingId = await helper.nonExistingId()
+      const blogsAtStart = await helper.blogsInDb()
+      const valuesToUpdate = { author: 'Updated Author', likes: 5}
+      const blogToUpdate = { ...blogsAtStart[0], ...valuesToUpdate }
+
+      await api
+        .put(`/api/blogs/${validNonexistingId}`)
+        .send(blogToUpdate)
+        .expect(404)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.deepStrictEqual(blogsAtEnd[0], blogsAtStart[0])
     })
   })
 })

@@ -144,7 +144,7 @@ describe('when there is initially some blogs saved', () => {
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
 
-    test('new blog missing athor and url', async () => {
+    test('new blog missing author and url', async () => {
       const newBlog = {
         title: "Test Title",
         likes: 0
@@ -154,6 +154,31 @@ describe('when there is initially some blogs saved', () => {
         .post('/api/blogs')
         .send(newBlog)
         .expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+  })
+
+  describe('deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+
+      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      const ids = blogsAtEnd.map(n => n.id)
+      assert(!ids.includes(blogToDelete.id))
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+    })
+
+    test('fails with statuscode 404 if blog does not exist', async () => {
+      const validNonexistingId = await helper.nonExistingId()
+
+      await api.delete(`/api/blogs/${validNonexistingId}`).expect(404)
 
       const blogsAtEnd = await helper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)

@@ -2,14 +2,15 @@
 This is for the submission of exercises 4.1-4.23 of the FullStack Open's course. See Full Stack open part 4 [here](https://fullstackopen.com/en/part4)
 
 ## Objective
-- Ex 4.7
+- Ex 4.12
   - ex 4.1-4.2 are exercises to start a backend api server to save blogs to a MongoDB Atlas database and practice project structure best practacies.
   - ex 4.3-7 are exercises to introduce writing helper functions and unit tests for those functions to the blog list app from ex 4.2.
   - ex 4.8-4.12 are exercises to introduce using async/await code instead and to write API-level integration tests for our server application.
+  - ex 4.13-4.14 are exercises to expand our blog list application by implementing various api functionality like deleting and updating blog entries.
 
 ## My Apps
 
-### Apps 4.1-4.12
+### Apps 4.1-4.13
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -652,6 +653,77 @@ describe('when there is initially some blogs saved', () => {
         .post('/api/blogs')
         .send(newBlog)
         .expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+  })
+})
+
+after(async () => {
+  await mongoose.connection.close()
+})
+```
+
+#### Ex 4.13
+- Implemented functionality for deleting a single blog post resource. Used the async/await syntax. Implemented tests to test for the correct functionality.
+
+```JS
+### controllers/blogs.js ###
+
+const blogsRouter = require('express').Router()
+const Blog = require('../models/blog')
+
+... // route handler for get and post requests
+
+// route handler for delete requests that use async/await
+blogsRouter.delete('/:id', async (request, response) => {
+  deletedBlog = await Blog.findByIdAndDelete(request.params.id)
+  if (!deletedBlog) {
+    response.status(404).end()
+  } else {
+    response.status(204).end()
+  }
+})
+
+module.exports = blogsRouter
+```
+
+```JS
+### blog_api.test.js ###
+
+// created this file to write api-level integration tests for Fullstack Open's course exercises
+
+... // beginning setup of file
+
+describe('when there is initially some blogs saved', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+  })
+
+  ... // previous tests
+
+  // code to verify delete request functionality
+  describe('deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+
+      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      const ids = blogsAtEnd.map(n => n.id)
+      assert(!ids.includes(blogToDelete.id))
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+    })
+
+    test('fails with statuscode 404 if blog does not exist', async () => {
+      const validNonexistingId = await helper.nonExistingId()
+
+      await api.delete(`/api/blogs/${validNonexistingId}`).expect(404)
 
       const blogsAtEnd = await helper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)

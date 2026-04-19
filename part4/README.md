@@ -9,7 +9,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.11
+### Apps 4.1-4.12
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -588,4 +588,78 @@ const blogSchema = mongoose.Schema({
 })
 
 ... // rest of model file
+```
+
+#### Ex 4.12
+- Wrote tests related to creating new blogs via the /api/blogs endpoint, that verify that if the title or url properties are missing from the request data, the backend responds to the request with the status code 400 Bad Request.
+
+```JS
+### blog_api.test.js ###
+
+// created this file to write api-level integration tests for Fullstack Open's course exercises
+
+... // beginning setup of file
+
+describe('when there is initially some blogs saved', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+  })
+
+  ... // previous tests
+
+  // code to verify that the backend resonds with 400 Bad Request if missing the url or title
+  describe('verifying that if title or url property are missing, returns 400 Bad Request', () => {
+    test('new blog missing author', async () => {
+      const newBlog = {
+        title: "Test Title",
+        url: "https://test.com/",
+        likes: 0
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+
+    test('new blog missing url', async () => {
+      const newBlog = {
+        title: "Test Title",
+        author: "Test the Author",
+        likes: 0
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+
+    test('new blog missing athor and url', async () => {
+      const newBlog = {
+        title: "Test Title",
+        likes: 0
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+  })
+})
+
+after(async () => {
+  await mongoose.connection.close()
+})
 ```

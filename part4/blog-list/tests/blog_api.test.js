@@ -110,6 +110,55 @@ describe('when there is initially some blogs saved', () => {
       assert.strictEqual(result.likes, 0)
     })
   })
+
+  describe('verifying that if title or url property are missing, returns 400 Bad Request', () => {
+    test('new blog missing author', async () => {
+      const newBlog = {
+        title: "Test Title",
+        url: "https://test.com/",
+        likes: 0
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+
+    test('new blog missing url', async () => {
+      const newBlog = {
+        title: "Test Title",
+        author: "Test the Author",
+        likes: 0
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+
+    test('new blog missing athor and url', async () => {
+      const newBlog = {
+        title: "Test Title",
+        likes: 0
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+  })
 })
 
 after(async () => {

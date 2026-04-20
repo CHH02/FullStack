@@ -2,7 +2,7 @@
 This is for the submission of exercises 4.1-4.23 of the FullStack Open's course. See Full Stack open part 4 [here](https://fullstackopen.com/en/part4)
 
 ## Objective
-- Ex 4.12
+- Ex 4.23
   - ex 4.1-4.2 are exercises to start a backend api server to save blogs to a MongoDB Atlas database and practice project structure best practacies.
   - ex 4.3-7 are exercises to introduce writing helper functions and unit tests for those functions to the blog list app from ex 4.2.
   - ex 4.8-4.12 are exercises to introduce using async/await code instead and to write API-level integration tests for our server application.
@@ -11,7 +11,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.22
+### Apps 4.1-4.23
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -1617,3 +1617,6 @@ app.use(middleware.errorHandler)
 
 module.exports = app
 ```
+
+#### Ex 4.23
+- After adding token-based authentication the tests for adding a new blog broke down. Fixed them. Also, wrote a new test to ensure adding a blog fails with the proper status code 401 Unauthorized if a token is not provided.

@@ -7,10 +7,11 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
   - ex 4.3-7 are exercises to introduce writing helper functions and unit tests for those functions to the blog list app from ex 4.2.
   - ex 4.8-4.12 are exercises to introduce using async/await code instead and to write API-level integration tests for our server application.
   - ex 4.13-4.14 are exercises to expand our blog list application by implementing various api functionality like deleting and updating blog entries.
+  - ex 4.15-4.23 are exercises to implement the basics of user management (e.g., using token-based authentication) and updating our unit and integration tests for the newly implemented functionality.
 
 ## My Apps
 
-### Apps 4.1-4.14
+### Apps 4.1-4.15
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -819,3 +820,86 @@ after(async () => {
   await mongoose.connection.close()
 })
 ```
+
+#### Ex 4.15
+- Implemented a way to create new users by doing an HTTP POST request to address api/users. Users have a username, password and name. Did not save passwords to the database as clear text, but used the bcrypt library. Implemented a way to see the details of all users by doing a suitable HTTP request.
+
+```JS
+### user.js ###
+
+// new file to store mongoose model on a user
+
+const mongoose = require('mongoose')
+
+const userSchema = new mongoose.Schema({
+  username: String,
+  name: String,
+  passwordHash: String,
+})
+
+userSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    delete returnedObject.passwordHash
+  }
+})
+
+const User = mongoose.model('User', userSchema)
+
+module.exports = User
+```
+
+```JS
+### users.js ###
+
+// new file to route API requests to our user collection in the DB
+
+const bcrypt = require('bcrypt')
+const usersRouter = require('express').Router()
+const User = require('../models/user')
+
+usersRouter.post('/', async (request, response) => {
+  const { username, name, password } = request.body
+
+  const saltRounds = 10
+  const passwordHash = await bcrypt.hash(password, saltRounds)
+
+  const user = new User({
+    username,
+    name,
+    passwordHash,
+  })
+
+  const savedUser = await user.save()
+
+  response.status(201).json(savedUser)
+})
+
+usersRouter.get('/', async (request, response) => {
+  const users = await User.find({})
+  response.json(users)
+})
+
+module.exports = usersRouter
+```
+
+```JS
+### app.js ###
+
+... // other import code
+
+// import our user route handler 
+const blogsRouter = require('./controllers/blogs')
+const usersRouter = require('./controllers/users')
+
+... // other server code
+
+// use our user route handler
+app.use('/api/blogs', blogsRouter)
+app.use('/api/users', usersRouter)
+
+... // rest of app.js file
+```
+

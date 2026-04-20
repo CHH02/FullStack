@@ -11,7 +11,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.15
+### Apps 4.1-4.16
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -903,3 +903,253 @@ app.use('/api/users', usersRouter)
 ... // rest of app.js file
 ```
 
+#### Ex 4.15
+- Added a features which adds the following restrictions to creating new users: Both username and password must be given and both must be at least 3 characters long. The username must be unique. Also, implemented tests that ensure invalid users are not created and that an invalid add user operation returns a suitable status code and error message.
+
+For validation:
+```JS
+### user.js ###
+
+const mongoose = require('mongoose')
+
+const userSchema = new mongoose.Schema({
+  // modified schema to be required, unique, and a minimum length of 3
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    minLength: 3
+  },
+  name: String,
+  passwordHash: String,
+})
+
+userSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    delete returnedObject.passwordHash
+  }
+})
+
+const User = mongoose.model('User', userSchema)
+
+module.exports = User
+```
+
+```JS
+### users.js ###
+
+const bcrypt = require('bcrypt')
+const usersRouter = require('express').Router()
+const User = require('../models/user')
+
+usersRouter.post('/', async (request, response) => {
+  const { username, name, password } = request.body
+
+  // implemented password validation with if statement in controller
+  if (!password || password.length < 3) {
+    return response.status(400).json(
+      {error: 'User validation failed: password: Path `password` is missing or shorter than the minimum allowed length (3).'}
+    )
+  }
+
+  const saltRounds = 10
+  const passwordHash = await bcrypt.hash(password, saltRounds)
+
+  const user = new User({
+    username,
+    name,
+    passwordHash,
+  })
+
+  const savedUser = await user.save()
+
+  response.status(201).json(savedUser)
+})
+
+usersRouter.get('/', async (request, response) => {
+  const users = await User.find({})
+  response.json(users)
+})
+
+module.exports = usersRouter
+```
+
+```JS
+### middleware.js ###
+
+... // other middleware handlers
+
+// updated error handler for when uniqueness validation fails which throws a MongoServerError
+const errorHandler = (error, request, response, next) => {
+  logger.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  } else if (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error')) {
+    return response.status(400).json({ error: 'expected `username` to be unique' })
+  }
+
+  next(error)
+}
+
+module.exports = {
+  requestLogger,
+  unknownEndpoint,
+  errorHandler
+}
+```
+
+For testing:
+```JS
+### tests/test_helper.js ###
+
+const Blog = require('../models/blog')
+const User = require('../models/user')
+
+... // test helper functions for blogs
+
+// created a test helper function for users
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(user => user.toJSON())
+}
+
+module.exports = {
+  initialBlogs, nonExistingId, blogsInDb, usersInDb
+}
+```
+
+```JS
+### blog_api.test.js ###
+
+... // other imports for tests
+
+const bcrypt = require('bcrypt')
+const helper = require('./test_helper')
+const User = require('../models/user')
+
+... // other api tests
+
+describe('when there is initially one user in db', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+    
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
+
+    await user.save()
+  })
+
+  test('creation fails with proper statuscode and message if username already taken', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'Superuser',
+      password: 'salainen',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    assert(result.body.error.includes('expected `username` to be unique'))
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+  test('creation fails with proper statuscode and message if no username given', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      name: 'Superuser',
+      password: 'salainen',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    assert(result.body.error.includes('User validation failed: username: Path `username` is required.'))
+    
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+  test('creation fails with proper statuscode and if username is too short', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'ro',
+      name: 'Superuser',
+      password: 'salainen',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    assert(result.body.error.includes('is shorter than the minimum allowed length (3).'))
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+  test('creation fails with proper statuscode and message if no password given', async () => {
+    const usersAtStart = await helper.usersInDb()
+  
+    const newUser = {
+      username: 'root',
+      name: 'Superuser',
+    }
+  
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  
+    const usersAtEnd = await helper.usersInDb()
+    assert(result.body.error.includes('User validation failed: password: Path `password` is missing or shorter than the minimum allowed length (3).'))
+  
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+  test('creation fails with proper statuscode and message if password is too short', async () => {
+    const usersAtStart = await helper.usersInDb()
+  
+    const newUser = {
+      username: 'root',
+      name: 'Superuser',
+      password: 'sa',
+    }
+  
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  
+    const usersAtEnd = await helper.usersInDb()
+    assert(result.body.error.includes('User validation failed: password: Path `password` is missing or shorter than the minimum allowed length (3).'))
+  
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+})
+
+after(async () => {
+  await mongoose.connection.close()
+})
+```

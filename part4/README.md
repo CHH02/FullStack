@@ -11,7 +11,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.17
+### Apps 4.1-4.18
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -1284,4 +1284,64 @@ blogsRouter.post('/', async (request, response) => {
 ... // code to handle delete and put requests
 
 module.exports = blogsRouter
+```
+
+#### Ex 4.18
+- Implemented token-based authentication
+
+```JS
+### login.js ###
+
+// created new login.js file to handle token-based authentication as a loginRouter
+
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const loginRouter = require('express').Router()
+const User = require('../models/user')
+
+loginRouter.post('/', async (request, response) => {
+  const { username, password } = request.body
+
+  const user = await User.findOne({ username })
+  const passwordCorrect = user === null
+    ? false
+    : await bcrypt.compare(password, user.passwordHash)
+
+  if (!(user && passwordCorrect)) {
+    return response.status(401).json({
+      error: 'invalid username or password'
+    })
+  }
+
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  }
+
+  const token = jwt.sign(
+    userForToken, 
+    process.env.SECRET,
+    { expiresIn: 60*60 }
+  )
+
+  response
+    .status(200)
+    .send({ token, username: user.username, name: user.name })
+})
+
+module.exports = loginRouter
+```
+
+```JS
+### app.js ###
+
+... // other imports
+
+// imported the loginRouter
+const loginRouter = require('./controllers/login')
+
+//... other server code
+
+// use the loginRouter
+app.use('/api/login', loginRouter)
 ```

@@ -11,7 +11,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.16
+### Apps 4.1-4.17
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -903,7 +903,7 @@ app.use('/api/users', usersRouter)
 ... // rest of app.js file
 ```
 
-#### Ex 4.15
+#### Ex 4.16
 - Added a features which adds the following restrictions to creating new users: Both username and password must be given and both must be at least 3 characters long. The username must be unique. Also, implemented tests that ensure invalid users are not created and that an invalid add user operation returns a suitable status code and error message.
 
 For validation:
@@ -1152,4 +1152,136 @@ describe('when there is initially one user in db', () => {
 after(async () => {
   await mongoose.connection.close()
 })
+```
+
+#### Ex 4.17
+- Expanded blogs so that each blog contains information on the creator of the blog. Modified adding new blogs so that when a new blog is created, any user from the database is designated as its creator (for example the one found first). Which user is designated as the creator will be implemented in later exercises. Modified listing all blogs so that the creator's user information is displayed with the blog and listing all users so that they also display the blogs created by each user.
+
+```JS
+### user.js ###
+
+const mongoose = require('mongoose')
+
+const userSchema = new mongoose.Schema({
+  // added blogs property to user schema
+  blogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog'
+    }
+  ],
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    minLength: 3
+  },
+  name: String,
+  passwordHash: String,
+})
+
+userSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    delete returnedObject.passwordHash
+  }
+})
+
+const User = mongoose.model('User', userSchema)
+
+module.exports = User
+```
+
+```JS
+### blog.js ###
+
+const mongoose = require('mongoose')
+
+const blogSchema = mongoose.Schema({
+  url: {
+    type: String,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  author: {
+    type: String,
+    required: true
+  },
+  // added user property to blog schema
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  likes: {
+    type: Number,
+    required: true,
+    default: 0
+  }
+})
+
+blogSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
+module.exports = mongoose.model('Blog', blogSchema)
+```
+
+```JS
+### users.js ###
+
+... // beginning of users.js file and other code
+
+// modified get handler to populate blogs property with their respective blogs for each user
+usersRouter.get('/', async (request, response) => {
+  const users = await User.find({}).populate('blogs', { url: 1, title: 1, author: 1 })
+  response.json(users)
+})
+
+module.exports = usersRouter
+```
+
+```JS
+### blogs.js ###
+
+const blogsRouter = require('express').Router()
+const Blog = require('../models/blog')
+// imported user model
+const User = require('../models/user')
+
+// modified get handler to populate user property with their respective user for each blog
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+  response.json(blogs)
+})
+
+blogsRouter.post('/', async (request, response) => {
+  const body = request.body
+
+  // added code to find first user to associate with the blog being created/posted
+  const user = await User.findOne()
+
+  if (!user) {
+    return response.status(400).json({ error: 'no valid users exist to assign blog to' })
+  }
+
+  const blog = new Blog({...body, user: user._id})
+
+  const savedBlog = await blog.save()
+  user.blogs = user.blogs.concat(savedBlog._id)
+  await user.save()
+  response.status(201).json(savedBlog)
+})
+
+... // code to handle delete and put requests
+
+module.exports = blogsRouter
 ```

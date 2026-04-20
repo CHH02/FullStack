@@ -11,7 +11,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.20
+### Apps 4.1-4.21
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -1476,4 +1476,47 @@ app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
 module.exports = app
+```
+
+#### Ex 4.21
+- Changed the delete blog operation so that a blog can be deleted only by the user who added it. Therefore, deleting a blog is possible only if the token sent with the request is the same as that of the blog's creator. If deleting a blog is attempted without a token or by an invalid user, the operation returns a suitable status code.
+
+```JS
+### blogs.js ###
+
+const blogsRouter = require('express').Router()
+const Blog = require('../models/blog')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+
+... // get and post request handlers
+
+blogsRouter.delete('/:id', async (request, response) => {
+  // added jwt verification
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
+  // identifies user in DB
+  const user = await User.findById(decodedToken.id)
+
+  const deletedBlog = await Blog.findByIdAndDelete(request.params.id)
+
+  // find deleted blog in user's blog list and remove it there too
+  const index = user.blogs.indexOf(deletedBlog._id)
+  if (index > -1) {
+    user.blogs.splice(index, 1)
+    await user.save()
+  }
+  if (!deletedBlog) {
+    response.status(404).end()
+  } else {
+    response.status(204).end()
+  }
+})
+
+... // put request handler
+
+module.exports = blogsRouter
 ```

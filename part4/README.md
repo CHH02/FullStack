@@ -11,7 +11,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.19
+### Apps 4.1-4.20
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -1424,4 +1424,56 @@ module.exports = {
   unknownEndpoint,
   errorHandler
 }
+```
+
+#### Ex 4.20
+- Refactored taking the token to a middleware. The middleware takes the token from the Authorization header and assign it to the token field of the request object.
+
+```JS
+### middleware.js ###
+
+... // other middlewares
+
+// this is the refactored token extraction middleware
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    request.token = authorization.replace('Bearer ', '')
+  } else {
+    request.token = null
+  }
+
+  next()
+}
+
+... // other middlewares
+
+module.exports = {
+  requestLogger,
+  tokenExtractor,
+  unknownEndpoint,
+  errorHandler
+}
+```
+
+```JS
+### app.js ###
+
+... // other imports
+
+const middleware = require('./utils/middleware')
+
+... // other server code
+
+// used token extractor middleware before route handlers
+app.use(middleware.tokenExtractor)
+
+app.use('/api/blogs', blogsRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
+
+module.exports = app
 ```

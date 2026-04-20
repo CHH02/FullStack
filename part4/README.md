@@ -11,7 +11,7 @@ This is for the submission of exercises 4.1-4.23 of the FullStack Open's course.
 
 ## My Apps
 
-### Apps 4.1-4.21
+### Apps 4.1-4.22
 #### Ex 4.1
 - Created a npm project for a backend api server that saves blogs to a MongoDB Atlas database.
 
@@ -1519,4 +1519,101 @@ blogsRouter.delete('/:id', async (request, response) => {
 ... // put request handler
 
 module.exports = blogsRouter
+```
+
+#### Ex 4.22
+- Created a new middleware called userExtractor that identifies the user related to the request and attaches it to the request object. After registering the middleware, the post and delete handlers should be able to access the user directly by referencing request.user
+
+```JS
+### middleware.js ###
+
+const logger = require('./logger')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+
+... // other middleware handlers
+
+// new userExtractore middleware that identifies and extracts a user into request.user
+const userExtractor = async (request, response, next) => {
+  if (!request.token) {
+    return response.status(401).json({ error: 'no token' })
+  }
+
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  request.user = await User.findById(decodedToken.id)
+
+  next()
+}
+
+... // other middleware handlers
+
+module.exports = {
+  requestLogger,
+  tokenExtractor,
+  userExtractor,
+  unknownEndpoint,
+  errorHandler
+}
+```
+
+```JS
+### blogs.js ###
+
+const blogsRouter = require('express').Router()
+const Blog = require('../models/blog')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+const { userExtractor } = require('../utils/middleware')
+
+... // get request handler
+
+// modified post handler to rely on userExtractor instead
+blogsRouter.post('/', userExtractor, async (request, response) => {
+  const body = request.body
+
+  const blog = new Blog({...body, user: request.user._id})
+
+  const savedBlog = await blog.save()
+  request.user.blogs = request.user.blogs.concat(savedBlog._id)
+  await request.user.save()
+  response.status(201).json(savedBlog)
+})
+
+// modified delete handler to rely on userExtractor instead
+blogsRouter.delete('/:id', userExtractor, async (request, response) => {
+  const deletedBlog = await Blog.findByIdAndDelete(request.params.id)
+  const index = request.user.blogs.indexOf(deletedBlog._id)
+  if (index > -1) {
+    request.user.blogs.splice(index, 1)
+    await request.user.save()
+  }
+  if (!deletedBlog) {
+    response.status(404).end()
+  } else {
+    response.status(204).end()
+  }
+})
+
+... // put request handler
+
+module.exports = blogsRouter
+```
+
+```JS
+### app.js ###
+
+... // beginning of file and other server code
+
+// registered middleware to the /api/blogs path routes
+app.use('/api/blogs', middleware.userExtractor, blogsRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
+
+module.exports = app
 ```

@@ -11,3 +11,5 @@ This is for the submission of exercises 5.1-5.31 of the FullStack Open's course.
 #### Ex 5.1
 - Implemented login functionality to the frontend. The token returned with a successful login is saved to the application's state user. If a user is not logged in, only the login form is visible. If the user is logged-in, the name of the user and a list of blogs is shown.
 
+#### Ex 5.2
+- Made the login 'permanent' by using the local storage. Also, implemented a way to log out ensuring that the browser does not remember the details of the user after logging out.

@@ -16,3 +16,6 @@ This is for the submission of exercises 5.1-5.31 of the FullStack Open's course.
 
 #### Ex 5.3
 - Expanded the application to allow a logged-in user to add new blogs
+
+#### Ex 5.4
+- Implemented notifications that inform the user about successful and unsuccessful operations at the top of the page.

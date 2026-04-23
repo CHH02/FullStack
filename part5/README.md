@@ -13,3 +13,6 @@ This is for the submission of exercises 5.1-5.31 of the FullStack Open's course.
 
 #### Ex 5.2
 - Made the login 'permanent' by using the local storage. Also, implemented a way to log out ensuring that the browser does not remember the details of the user after logging out.
+
+#### Ex 5.3
+- Expanded the application to allow a logged-in user to add new blogs

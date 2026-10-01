@@ -26,3 +26,6 @@ This is for the submission of exercises 5.1-5.31 of the FullStack Open's course.
 - Made the blog‑creation form visible only when appropriate (hidden by default, shown when “create new blog” is clicked, and hidden again after creating or canceling).
 - Moved all form state into the blog-creation form component, similar to what is seen in the [course material](https://fullstackopen.com/en/part5/props_children_and_component_refs#state-of-the-forms).
   - Note: already proactively extracted the blog‑creation form into its own component in ex 5.3.
+
+#### Ex 5.7
+- Added a toggle button to each blog to show/hide its full details; details expand when clicked and collapse when clicked again. 

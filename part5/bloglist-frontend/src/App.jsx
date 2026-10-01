@@ -113,6 +113,38 @@ const App = () => {
     }
   }
 
+  const updateBlog = async blogToUpdate => {
+    const sameBlog = blogs.find(blog => {
+      return (blog.title === blogToUpdate.title
+        && blog.author === blogToUpdate.author
+        && blog.url === blogToUpdate.url)
+    })
+
+    if (JSON.stringify(sameBlog) === JSON.stringify(blogToUpdate)) {
+      setTypeOfMessage('error')
+      setMessage(`Nothing to update for ${blogToUpdate.title}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000);
+    } else {
+      try {   
+        const returnedBlog = await blogService.update(blogToUpdate)
+        setBlogs(blogs.map(blog => blog.id !== returnedBlog.id ? blog : returnedBlog))
+        setTypeOfMessage('success')
+        setMessage(`Updated ${returnedBlog.title}`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000);
+      } catch (error) {
+        setTypeOfMessage('error')
+        setMessage(error.response.data.error)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000);
+      }
+    } 
+  }
+
   if (user === null) {
     return (
       <div>
@@ -144,7 +176,7 @@ const App = () => {
         />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
     </div>
   )

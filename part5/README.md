@@ -28,4 +28,7 @@ This is for the submission of exercises 5.1-5.31 of the FullStack Open's course.
   - Note: already proactively extracted the blog‑creation form into its own component in ex 5.3.
 
 #### Ex 5.7
-- Added a toggle button to each blog to show/hide its full details; details expand when clicked and collapse when clicked again. 
+- Added a toggle button to each blog to show/hide its full details; details expand when clicked and collapse when clicked again.
+
+#### Ex 5.8
+- Implemented the like button by sending a PUT request to update the blog’s likes in the backend.

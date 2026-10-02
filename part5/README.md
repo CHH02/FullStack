@@ -41,3 +41,6 @@ This is for the submission of exercises 5.1-5.31 of the FullStack Open's course.
 
 #### Ex 5.11
 - Added delete functionality for blogs, including a confirmation dialog, and show the delete button only for blogs created by the logged‑in user.
+
+#### Ex 5.12
+- Configured ESLint for the project and resolved all reported linting issues to enforce consistent coding standards.

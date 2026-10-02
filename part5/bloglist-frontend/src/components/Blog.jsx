@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   const [view, setView] = useState(false)
@@ -13,12 +13,12 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
 
   const hideWhenViewing = { display: view ? 'none' : '' }
   const showWhenViewing = { display: view ? '' : 'none' }
-  
+
   const changeView = () => {
     setView(!view)
   }
-  
-  return (    
+
+  return (
     <div style={blogStyle}>
       <div style={hideWhenViewing}>
         {blog.title} {blog.author} <button onClick={changeView}>view</button>
@@ -26,13 +26,13 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
       <div style={showWhenViewing}>
         {blog.title} {blog.author} <button onClick={changeView}>hide</button> <br />
         {blog.url} <br />
-        likes {blog.likes} <button onClick={() => updateBlog({...blog, user: blog.user.id, likes: blog.likes+1})}>like</button> <br />
+        likes {blog.likes} <button onClick={() => updateBlog({ ...blog, user: blog.user.id, likes: blog.likes+1 })}>like</button> <br />
         {blog.user.name} <br />
         <button
-          style={{display: (user.name === blog.user.name ? '' : 'none')}}
+          style={{ display: (user.name === blog.user.name ? '' : 'none') }}
           onClick={() => removeBlog(blog)}>remove</button>
       </div>
-    </div>  
+    </div>
   )
 }
 

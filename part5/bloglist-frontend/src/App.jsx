@@ -22,11 +22,11 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem(`loggedBlogappUser`)
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
@@ -36,11 +36,11 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem(
-        `loggedBlogappUser`, JSON.stringify(user)
+        'loggedBlogappUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
@@ -61,7 +61,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem(`loggedBlogappUser`)
+    window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
     setTypeOfMessage('success')
     setMessage('Logged out!')
@@ -83,15 +83,15 @@ const App = () => {
         && blog.author === newBlog.author
         && blog.url === newBlog.url)
     })
-    
+
     if (sameBlog !== undefined) {
       setTypeOfMessage('error')
       setMessage(`${newBlog.title} is already added`)
       setTimeout(() => {
         setMessage(null)
-      }, 5000);
+      }, 5000)
     } else {
-      try {   
+      try {
         const returnedBlog = await blogService.create(newBlog)
         setBlogs(blogs.concat(returnedBlog))
         setTitle('')
@@ -101,14 +101,14 @@ const App = () => {
         setMessage(`Added ${returnedBlog.title}`)
         setTimeout(() => {
           setMessage(null)
-        }, 5000);
+        }, 5000)
         blogFormRef.current.toggleVisibility()
       } catch (error) {
         setTypeOfMessage('error')
         setMessage(error.response.data.error)
         setTimeout(() => {
           setMessage(null)
-        }, 5000);
+        }, 5000)
       }
     }
   }
@@ -125,42 +125,42 @@ const App = () => {
       setMessage(`Nothing to update for ${blogToUpdate.title}`)
       setTimeout(() => {
         setMessage(null)
-      }, 5000);
+      }, 5000)
     } else {
-      try {   
+      try {
         const returnedBlog = await blogService.update(blogToUpdate)
         setBlogs(blogs.map(blog => blog.id !== returnedBlog.id ? blog : returnedBlog))
         setTypeOfMessage('success')
         setMessage(`Updated ${returnedBlog.title}`)
         setTimeout(() => {
           setMessage(null)
-        }, 5000);
+        }, 5000)
       } catch (error) {
         setTypeOfMessage('error')
         setMessage(error.response.data.error)
         setTimeout(() => {
           setMessage(null)
-        }, 5000);
+        }, 5000)
       }
-    } 
+    }
   }
 
   const removeBlog = async blogToRemove => {
     if (window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)){
-      try {   
+      try {
         await blogService.remove(blogToRemove)
         setBlogs(blogs.filter(blog => blog.id !== blogToRemove.id))
         setTypeOfMessage('success')
         setMessage(`Removed ${blogToRemove.title}`)
         setTimeout(() => {
           setMessage(null)
-        }, 5000);
+        }, 5000)
       } catch (error) {
         setTypeOfMessage('error')
         setMessage(error.response.data.error)
         setTimeout(() => {
           setMessage(null)
-        }, 5000);
+        }, 5000)
       }
     }
   }

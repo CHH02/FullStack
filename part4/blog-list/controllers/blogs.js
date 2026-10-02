@@ -14,7 +14,8 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
   const blog = new Blog({...body, user: request.user._id})
 
-  const savedBlog = await blog.save()
+  await blog.save()
+  const savedBlog = await blog.populate('user')
   request.user.blogs = request.user.blogs.concat(savedBlog._id)
   await request.user.save()
   response.status(201).json(savedBlog)
@@ -40,7 +41,8 @@ blogsRouter.put('/:id', async (request, response) => {
     response.status(404).end()
   } else {
     blogToUpdate.set(request.body)
-    const updatedBlog = await blogToUpdate.save()
+    await blogToUpdate.save()
+    const updatedBlog = await blogToUpdate.populate('user')
     response.json(updatedBlog)
   }
 })

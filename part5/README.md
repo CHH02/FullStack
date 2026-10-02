@@ -32,3 +32,6 @@ This is for the submission of exercises 5.1-5.31 of the FullStack Open's course.
 
 #### Ex 5.8
 - Implemented the like button by sending a PUT request to update the blog’s likes in the backend.
+
+#### Ex 5.9
+- Fixed the issue where the blog’s user information disappears after liking until reload (ensured correct user data is preserved).

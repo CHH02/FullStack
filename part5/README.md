@@ -35,3 +35,6 @@ This is for the submission of exercises 5.1-5.31 of the FullStack Open's course.
 
 #### Ex 5.9
 - Fixed the issue where the blog’s user information disappears after liking until reload (ensured correct user data is preserved).
+
+#### Ex 5.10
+- Sorted blogs by number of likes using [array.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) so the most‑liked blogs appear first.

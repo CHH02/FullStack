@@ -38,3 +38,6 @@ This is for the submission of exercises 5.1-5.31 of the FullStack Open's course.
 
 #### Ex 5.10
 - Sorted blogs by number of likes using [array.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) so the most‑liked blogs appear first.
+
+#### Ex 5.11
+- Added delete functionality for blogs, including a confirmation dialog, and show the delete button only for blogs created by the logged‑in user.

@@ -145,6 +145,26 @@ const App = () => {
     } 
   }
 
+  const removeBlog = async blogToRemove => {
+    if (window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)){
+      try {   
+        await blogService.remove(blogToRemove)
+        setBlogs(blogs.filter(blog => blog.id !== blogToRemove.id))
+        setTypeOfMessage('success')
+        setMessage(`Removed ${blogToRemove.title}`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000);
+      } catch (error) {
+        setTypeOfMessage('error')
+        setMessage(error.response.data.error)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000);
+      }
+    }
+  }
+
   if (user === null) {
     return (
       <div>
@@ -178,7 +198,7 @@ const App = () => {
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} user={user} />
         )
       }
     </div>
